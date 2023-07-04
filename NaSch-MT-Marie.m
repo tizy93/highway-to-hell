@@ -24,17 +24,17 @@ Maximalgeschwindigkeit vMax und Tr\[ODoubleDot]delwahrscheinlichkeit p mit Funkt
 
 (*Autos haben Position x und Geschwindigkeit v zum vorderen Auto*)
 xAutos=Sort[RandomSample[Range[nCells],nCar]];
-(**eine zuf\[ADoubleDot]llige Liste (Position) "xAutos" ohne wiederholungen (Sample) und in aufsteigende Reihen sortiert (Sort)erzeugen**)
+(** erzeugt eine zuf\[ADoubleDot]llige Liste (Position) "xAutos" ohne wiederholungen (Sample) und in aufsteigende Reihen sortiert (Sort)**)
 vAutos=RandomInteger[{0,vMax},nCar];
-(**eine zuf\[ADoubleDot]llige Zahl zu jedes Auto zuordnen **)
+(**zuordnet eine zuf\[ADoubleDot]llige Zahl zu jedes Auto **)
 
 (*Verkehrsregeln aus NaSch-Modell implementieren*)
 For[i=0,i<=tMax,i++, (*Schleife der Runden bis tMax*)
-(**Zyklus von Runden von i=0 bis i<=tMax**)
+(**erzeugt ein Zyklus von Runden von i=0 bis i<=tMax**)
 
 (*Freie Zellen d vor dem Auto bis zum vorderen*)
 dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,1,nCar-1}]; (*In Schleife, damit es geupdatet wird*)
-(**abstand des Autos mit bedingung dass ein auto kleiner gleich des gr\[ODoubleDot]\[SZ]es xAutos ist, dann ergibt den abstand zwischen zwei Autos **)
+(**erzeugt der Abstand des Autos mit bedingung dass ein auto kleiner gleich des gr\[ODoubleDot]\[SZ]es xAutos ist, dann ergibt den abstand zwischen zwei Autos **)
 (*Arrays fangen bei 1 an; n+1 muss f\[UDoubleDot]r das letzte gleich nCar sein; Abstand des letzten Autos ist bis zum ersten, da Ringstra\[SZ]e*)
 AppendTo[dAutos,If[xAutos[[nCar]]<Max[xAutos],xAutos[[1]]-xAutos[[nCar]]-1,nCells-xAutos[[nCar]]+Min[xAutos]-1]];
 (**abstand zur n\[ADoubleDot]chste auto (dar\[UDoubleDot]ber bin ich nicht sicher)????**)
@@ -151,10 +151,6 @@ vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,1,nCar}]
 vAutos=Table[If[n<nCar,Min[dAutos[[n]],vAutos[[n]]],Min[nCells-xAutos[[n]]+xAutos[[1]],vAutos[[n]]]],{n,1,nCar}]
 vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,1,nCar}]
 xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}]
-
-
-(* ::Input:: *)
-(**)
 
 
 (* ::Input:: *)
