@@ -60,7 +60,7 @@ Cell[BoxData[
       RowBox[{"Simulationsdauer", " ", "tMax"}], ",", " ", "\n", 
       RowBox[{
       "Maximalgeschwindigkeit", " ", "vMax", " ", "und", " ", 
-       "Tr\[ODoubleDot]delwahrscheinlichkeit", " ", "p", " ", "mit", " ", 
+       "Trödelwahrscheinlichkeit", " ", "p", " ", "mit", " ", 
        "Funktionsaufruf"}]}], "*)"}], "\n", "\n", 
     RowBox[{"(*", 
      RowBox[{"lokale", " ", "Variablen"}], "*)"}], "\n", 
@@ -74,37 +74,267 @@ Cell[BoxData[
        "Geschwindigkeit", " ", "v", " ", "zum", " ", "vorderen", " ", 
        "Auto"}], "*)"}], "\n", 
      RowBox[{
-      RowBox[{"xAutos", "=", 
-       RowBox[{"Sort", "[", 
-        RowBox[{"RandomSample", "[", 
-         RowBox[{
-          RowBox[{"Range", "[", "nCells", "]"}], ",", "nCar"}], "]"}], 
-        "]"}]}], ";", "\n", 
-      RowBox[{"vAutos", "=", 
-       RowBox[{"RandomInteger", "[", 
+     RowBox[{"xAutos", "=", 
+      RowBox[{"Sort", "[", 
+       RowBox[{"RandomSample", "[", 
         RowBox[{
-         RowBox[{"{", 
-          RowBox[{"0", ",", "vMax"}], "}"}], ",", "nCar"}], "]"}]}], ";", " ",
+         RowBox[{"Range", "[", "nCells", "]"}], ",", "nCar"}], "]"}], "]"}]}],
+      ";", "\n", 
+     RowBox[{"(*", 
+      RowBox[{"*", "eine", " ", "zufällige", " ", "Liste", " ", 
+       RowBox[{"(", "Position", ")"}], " ", "\"\<xAutos\>\"", " ", "ohne", 
+       " ", "wiederholungen", " ", 
+       RowBox[{"(", "Sample", ")"}], " ", "und", " ", "in", " ", 
+       "aufsteigende", " ", "Reihen", " ", "sortiert", " ", 
+       RowBox[{"(", "Sort", ")"}], "erzeugen"}], "**)"}], "\n", 
+     RowBox[{"vAutos", "=", 
+      RowBox[{"RandomInteger", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"0", ",", "vMax"}], "}"}], ",", "nCar"}], "]"}]}], ";", " ", 
+     "\n", 
+     RowBox[{"(*", 
+      RowBox[{
+      "*", "eine", " ", "zufällige", " ", "Zahl", " ", "zu", " ", 
+       "jedes", " ", "Auto", " ", "zuordnen"}], " ", "**)"}], "\n", "\n", 
+     RowBox[{"(*", 
+      RowBox[{
+       RowBox[{"Verkehrsregeln", " ", "aus", " ", "NaSch"}], "-", 
+       RowBox[{"Modell", " ", "implementieren"}]}], "*)"}], "\n", 
+     RowBox[{"For", "[", 
+      RowBox[{
+       RowBox[{"i", "=", "0"}], ",", 
+       RowBox[{"i", "<=", "tMax"}], ",", 
+       RowBox[{"i", "++"}], ",", " ", 
+       RowBox[{"(*", 
+        RowBox[{
+        "Schleife", " ", "der", " ", "Runden", " ", "bis", " ", "tMax"}], 
+        "*)"}], "\n", 
+       RowBox[{"(*", 
+        RowBox[{
+         RowBox[{
+         "*", "Zyklus", " ", "von", " ", "Runden", " ", "von", " ", "i"}], 
+         "=", 
+         RowBox[{
+          RowBox[{"0", " ", "bis", " ", "i"}], "<=", "tMax"}]}], "**)"}], 
        "\n", "\n", 
-      RowBox[{"(*", 
-       RowBox[{
-        RowBox[{"Verkehrsregeln", " ", "aus", " ", "NaSch"}], "-", 
-        RowBox[{"Modell", " ", "implementieren"}]}], "*)"}], "\n", 
-      RowBox[{"For", "[", 
-       RowBox[{
-        RowBox[{"i", "=", "0"}], ",", 
-        RowBox[{"i", "<=", "tMax"}], ",", 
-        RowBox[{"i", "++"}], ",", " ", 
-        RowBox[{"(*", 
-         RowBox[{
-         "Schleife", " ", "der", " ", "Runden", " ", "bis", " ", "tMax"}], 
-         "*)"}], "\n", "\n", 
-        RowBox[{"(*", 
-         RowBox[{
-         "Freie", " ", "Zellen", " ", "d", " ", "vor", " ", "dem", " ", 
-          "Auto", " ", "bis", " ", "zum", " ", "vorderen"}], "*)"}], "\n", 
+       RowBox[{"(*", 
         RowBox[{
-         RowBox[{"dAutos", "=", 
+        "Freie", " ", "Zellen", " ", "d", " ", "vor", " ", "dem", " ", "Auto",
+          " ", "bis", " ", "zum", " ", "vorderen"}], "*)"}], "\n", 
+       RowBox[{
+        RowBox[{
+         RowBox[{
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{
+               RowBox[{
+                RowBox[{
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"dAutos", "=", 
+                    RowBox[{"Table", "[", 
+                    RowBox[{
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"xAutos", "[", 
+                    RowBox[{"[", "n", "]"}], "]"}], "<", 
+                    RowBox[{"Max", "[", "xAutos", "]"}]}], ",", 
+                    RowBox[{
+                    RowBox[{"xAutos", "[", 
+                    RowBox[{"[", 
+                    RowBox[{"n", "+", "1"}], "]"}], "]"}], "-", 
+                    RowBox[{"xAutos", "[", 
+                    RowBox[{"[", "n", "]"}], "]"}], "-", "1"}], ",", 
+                    RowBox[{"nCells", "-", 
+                    RowBox[{"xAutos", "[", 
+                    RowBox[{"[", "n", "]"}], "]"}], "+", 
+                    RowBox[{"Min", "[", "xAutos", "]"}], "-", "1"}]}], "]"}], 
+                    ",", 
+                    RowBox[{"{", 
+                    RowBox[{"n", ",", "1", ",", 
+                    RowBox[{"nCar", "-", "1"}]}], "}"}]}], "]"}]}], ";"}], 
+                   " ", 
+                   RowBox[{"(*", 
+                    RowBox[{
+                    RowBox[{"In", " ", "Schleife"}], ",", " ", 
+                    RowBox[{
+                    "damit", " ", "es", " ", "geupdatet", " ", "wird"}]}], 
+                    "*)"}], "\n", 
+                   RowBox[{"(*", 
+                    RowBox[{
+                    RowBox[{
+                    "*", "abstand", " ", "des", " ", "Autos", " ", "mit", " ",
+                     "bedingung", " ", "dass", " ", "ein", " ", "auto", " ", 
+                    "kleiner", " ", "gleich", " ", "des", " ", 
+                    "größes", " ", "xAutos", " ", "ist"}], 
+                    ",", " ", 
+                    RowBox[{
+                    "dann", " ", "ergibt", " ", "den", " ", "abstand", " ", 
+                    "zwischen", " ", "zwei", " ", "Autos"}]}], " ", "**)"}], 
+                   "\n", 
+                   RowBox[{"(*", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    "Arrays", " ", "fangen", " ", "bei", " ", "1", " ", 
+                    "an"}], ";", " ", 
+                    RowBox[{"n", "+", 
+                    RowBox[{
+                    "1", " ", "muss", " ", "für", " ", "das", " ",
+                     "letzte", " ", "gleich", " ", "nCar", " ", "sein"}]}], 
+                    ";", " ", 
+                    RowBox[{
+                    "Abstand", " ", "des", " ", "letzten", " ", "Autos", " ", 
+                    "ist", " ", "bis", " ", "zum", " ", "ersten"}]}], ",", 
+                    " ", 
+                    RowBox[{"da", " ", "Ringstraße"}]}], "*)"}], "\n", 
+                   RowBox[{"AppendTo", "[", 
+                    RowBox[{"dAutos", ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"xAutos", "[", 
+                    RowBox[{"[", "nCar", "]"}], "]"}], "<", 
+                    RowBox[{"Max", "[", "xAutos", "]"}]}], ",", 
+                    RowBox[{
+                    RowBox[{"xAutos", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "-", 
+                    RowBox[{"xAutos", "[", 
+                    RowBox[{"[", "nCar", "]"}], "]"}], "-", "1"}], ",", 
+                    RowBox[{"nCells", "-", 
+                    RowBox[{"xAutos", "[", 
+                    RowBox[{"[", "nCar", "]"}], "]"}], "+", 
+                    RowBox[{"Min", "[", "xAutos", "]"}], "-", "1"}]}], 
+                    "]"}]}], "]"}]}], ";"}], "\n", 
+                 RowBox[{"(*", 
+                  RowBox[{
+                  "*", "abstand", " ", "zur", " ", "nächste", " ",
+                    "auto", 
+                   RowBox[{"??", "??"}]}], "**)"}], 
+                 RowBox[{"(*", 
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{
+                    "Abstand", " ", "des", " ", "Autos", " ", "an", " ", 
+                    "Stelle", " ", "nCar", " ", "zum", " ", "ersten", " ", 
+                    "wird", " ", "angehängt"}], ";", "\n", 
+                    RowBox[{
+                    RowBox[{"d", " ", "immer"}], " ", "-", "1"}]}], ",", " ", 
+                   RowBox[{
+                   "da", " ", "freie", " ", "Zellen", " ", "vor", " ", "Auto",
+                     " ", "gemeint", " ", "sind"}]}], "*)"}], "\n", "\n", 
+                 RowBox[{"(*", 
+                  RowBox[{
+                   RowBox[{"R1", ":", " ", "Beschleunigen"}], ",", " ", 
+                   RowBox[{
+                   "falls", " ", "vMax", " ", "noch", " ", "nicht", " ", 
+                    "erreicht"}]}], "*)"}], "\n", "vAutos"}], "=", 
+                RowBox[{"Table", "[", 
+                 RowBox[{
+                  RowBox[{"Min", "[", 
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{"vAutos", "[", 
+                    RowBox[{"[", "n", "]"}], "]"}], "+", "1"}], ",", "vMax"}],
+                    "]"}], ",", 
+                  RowBox[{"{", 
+                   RowBox[{"n", ",", "1", ",", "nCar"}], "}"}]}], "]"}]}], 
+               ";"}], "\n", 
+              RowBox[{"(*", 
+               RowBox[{
+                RowBox[{
+                "*", "die", " ", "geschwindigkeit", " ", "wird", " ", 
+                 "implementiert", " ", "von"}], " ", "+", 
+                RowBox[{
+                "1", " ", "jede", " ", "Runde", " ", "bis", " ", "zu", " ", 
+                 "vMax"}]}], "**)"}], "\n", 
+              RowBox[{"(*", 
+               RowBox[{
+                RowBox[{"R2", ":", " ", "Abbremsen"}], ",", " ", 
+                RowBox[{
+                "falls", " ", "v", " ", "größer", " ", "als", 
+                 " ", "Abstand", " ", "d"}]}], "*)"}], "\n", "vAutos"}], "=", 
+             RowBox[{"Table", "[", 
+              RowBox[{
+               RowBox[{"Min", "[", 
+                RowBox[{
+                 RowBox[{"dAutos", "[", 
+                  RowBox[{"[", "n", "]"}], "]"}], ",", 
+                 RowBox[{"vAutos", "[", 
+                  RowBox[{"[", "n", "]"}], "]"}]}], "]"}], ",", 
+               RowBox[{"{", 
+                RowBox[{"n", ",", "1", ",", "nCar"}], "}"}]}], "]"}]}], ";", 
+            " ", "\n", 
+            RowBox[{"(*", 
+             RowBox[{
+              RowBox[{
+              "*", "wird", " ", "Überprüft"}], 
+              ",", " ", 
+              RowBox[{
+              "ob", " ", "der", " ", "Abstand", " ", "zwischen", " ", "ein", 
+               " ", "Auto", " ", "und", " ", "die", " ", "vordere", " ", 
+               "groß", " ", "genug", " ", "ist"}]}], " ", "**)"}], "\n", 
+            "\n", "\n", 
+            RowBox[{"(*", 
+             RowBox[{"R3", ":", " ", 
+              RowBox[{
+              "Trödeln", " ", "mit", " ", "Wahrscheinlichkeit", 
+               " ", "p"}]}], "*)"}], "\n", 
+            RowBox[{"vAutos", "=", 
+             RowBox[{"Table", "[", 
+              RowBox[{
+               RowBox[{"If", "[", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"RandomReal", "[", 
+                   RowBox[{"{", 
+                    RowBox[{"0", ",", "1"}], "}"}], "]"}], "<=", "p"}], ",", 
+                 RowBox[{
+                  RowBox[{"vAutos", "[", 
+                   RowBox[{"[", "n", "]"}], "]"}], "=", 
+                  RowBox[{"Max", "[", 
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{"vAutos", "[", 
+                    RowBox[{"[", "n", "]"}], "]"}], "-", "1"}], ",", "0"}], 
+                   "]"}]}], ",", 
+                 RowBox[{"vAutos", "[", 
+                  RowBox[{"[", "n", "]"}], "]"}]}], "]"}], ",", 
+               RowBox[{"{", 
+                RowBox[{"n", ",", "1", ",", "nCar"}], "}"}]}], "]"}]}], ";"}],
+            " ", 
+           RowBox[{"(*", 
+            RowBox[{
+             RowBox[{
+             "Trödeln", " ", "solange", " ", "noch", " ", "nicht",
+               " ", "v"}], "=", "0"}], "*)"}], "\n", 
+           RowBox[{"(*", 
+            RowBox[{
+             RowBox[{"*", "Überprüf"}], ",", 
+             " ", 
+             RowBox[{
+             "ob", " ", "die", " ", "Trödelnwahrscheinligkeit", 
+              " ", 
+              RowBox[{"(", "p", ")"}], " ", "null", " ", "oder", " ", "eins", 
+              " ", "ist", " ", "also", " ", "ob", " ", "das", " ", "auto", 
+              " ", "trödelt", " ", "oder", " ", "nicht"}]}], " ", 
+            "**)"}], "\n", 
+           RowBox[{"(*", 
+            RowBox[{
+             RowBox[{
+             "Falls", " ", "zufällige", " ", "Zahl", " ", "nicht",
+               " ", "im", " ", "gegebenen", " ", "Intervall"}], ",", " ", 
+             RowBox[{"bleibt", " ", "v", " ", "gleich"}]}], "*)"}], "\n", 
+           "\n", 
+           RowBox[{"(*", 
+            RowBox[{"R4", ":", " ", 
+             RowBox[{"Fahren", " ", "um", " ", "vAutos", " ", "Zellen"}]}], 
+            "*)"}], "\n", "xAutos"}], "=", 
           RowBox[{"Table", "[", 
            RowBox[{
             RowBox[{"If", "[", 
@@ -139,12 +369,12 @@ Cell[BoxData[
             " ", 
             RowBox[{"n", "+", 
              RowBox[{
-             "1", " ", "muss", " ", "f\[UDoubleDot]r", " ", "das", " ", 
+             "1", " ", "muss", " ", "für", " ", "das", " ", 
               "letzte", " ", "gleich", " ", "nCar", " ", "sein"}]}], ";", " ", 
             RowBox[{
             "Abstand", " ", "des", " ", "letzten", " ", "Autos", " ", "ist", 
              " ", "bis", " ", "zum", " ", "ersten"}]}], ",", " ", 
-           RowBox[{"da", " ", "Ringstra\[SZ]e"}]}], "*)"}], "\n", 
+           RowBox[{"da", " ", "Ringstraße"}]}], "*)"}], "\n", 
          RowBox[{"AppendTo", "[", 
           RowBox[{"dAutos", ",", 
            RowBox[{"If", "[", 
@@ -169,7 +399,7 @@ Cell[BoxData[
             RowBox[{
             "Abstand", " ", "des", " ", "Autos", " ", "an", " ", "Stelle", 
              " ", "nCar", " ", "zum", " ", "ersten", " ", "wird", " ", 
-             "angeh\[ADoubleDot]ngt"}], ";", "\n", 
+             "angehängt"}], ";", "\n", 
             RowBox[{
              RowBox[{"d", " ", "immer"}], " ", "-", "1"}]}], ",", " ", 
            RowBox[{
@@ -197,7 +427,7 @@ Cell[BoxData[
           RowBox[{
            RowBox[{"R2", ":", " ", "Abbremsen"}], ",", " ", 
            RowBox[{
-           "falls", " ", "v", " ", "gr\[ODoubleDot]\[SZ]er", " ", "als", " ", 
+           "falls", " ", "v", " ", "größer", " ", "als", " ", 
             "Abstand", " ", "d"}]}], "*)"}], "\n", 
          RowBox[{"vAutos", "=", 
           RowBox[{"Table", "[", 
@@ -214,7 +444,7 @@ Cell[BoxData[
          RowBox[{"(*", 
           RowBox[{"R3", ":", " ", 
            RowBox[{
-           "Tr\[ODoubleDot]deln", " ", "mit", " ", "Wahrscheinlichkeit", " ", 
+           "Trödeln", " ", "mit", " ", "Wahrscheinlichkeit", " ", 
             "p"}]}], "*)"}], "\n", 
          RowBox[{"vAutos", "=", 
           RowBox[{"Table", "[", 
@@ -241,12 +471,12 @@ Cell[BoxData[
          RowBox[{"(*", 
           RowBox[{
            RowBox[{
-           "Tr\[ODoubleDot]deln", " ", "solange", " ", "noch", " ", "nicht", 
+           "Trödeln", " ", "solange", " ", "noch", " ", "nicht", 
             " ", "v"}], "=", "0"}], "*)"}], "\n", 
          RowBox[{"(*", 
           RowBox[{
            RowBox[{
-           "Falls", " ", "zuf\[ADoubleDot]llige", " ", "Zahl", " ", "nicht", 
+           "Falls", " ", "zufällige", " ", "Zahl", " ", "nicht", 
             " ", "im", " ", "gegebenen", " ", "Intervall"}], ",", " ", 
            RowBox[{"bleibt", " ", "v", " ", "gleich"}]}], "*)"}], "\n", "\n", 
          RowBox[{"(*", 
@@ -287,12 +517,12 @@ Cell[BoxData[
          RowBox[{"(*", 
           RowBox[{
            RowBox[{
-           "Falls", " ", "Autos", " ", "au\[SZ]erhalb", " ", "Zellen", " ", 
+           "Falls", " ", "Autos", " ", "außerhalb", " ", "Zellen", " ", 
             "bewegt"}], ",", " ", 
            RowBox[{
            "wird", " ", "Bewegung", " ", "in", " ", "erster", " ", "Zelle", 
             " ", "fortgesetzt"}], ",", " ", 
-           RowBox[{"da", " ", "Ringstra\[SZ]e"}]}], "*)"}], "\n", "\n", 
+           RowBox[{"da", " ", "Ringstraße"}]}], "*)"}], "\n", "\n", 
          RowBox[{
           RowBox[{"{", 
            RowBox[{"iter", "=", 
@@ -316,6 +546,75 @@ Cell[BoxData[
              RowBox[{"dAutos", ",", 
               RowBox[{"Print", "[", "dAutos", "]"}]}], "]"}]}], "}"}]}]}]}], 
        "\n", "]"}]}]}], "\n", "]"}]}]}]], "Code",
+               RowBox[{
+                RowBox[{"xAutos", "[", 
+                 RowBox[{"[", "n", "]"}], "]"}], "+", 
+                RowBox[{"vAutos", "[", 
+                 RowBox[{"[", "n", "]"}], "]"}]}], "<=", "nCells"}], ",", 
+              RowBox[{
+               RowBox[{"xAutos", "[", 
+                RowBox[{"[", "n", "]"}], "]"}], "=", 
+               RowBox[{
+                RowBox[{"xAutos", "[", 
+                 RowBox[{"[", "n", "]"}], "]"}], "+", 
+                RowBox[{"vAutos", "[", 
+                 RowBox[{"[", "n", "]"}], "]"}]}]}], ",", 
+              RowBox[{
+               RowBox[{"xAutos", "[", 
+                RowBox[{"[", "n", "]"}], "]"}], "=", 
+               RowBox[{
+                RowBox[{"xAutos", "[", 
+                 RowBox[{"[", "n", "]"}], "]"}], "+", 
+                RowBox[{"vAutos", "[", 
+                 RowBox[{"[", "n", "]"}], "]"}], "-", "nCells"}]}]}], "]"}], 
+            ",", 
+            RowBox[{"{", 
+             RowBox[{"n", ",", "1", ",", "nCar"}], "}"}]}], "]"}]}], ";"}], 
+        "\n", 
+        RowBox[{"(*", 
+         RowBox[{
+          RowBox[{
+          "*", "überprüft", " ", "ob", " ", "die", 
+           " ", "Position", " ", "von", " ", "den", " ", "Autos", " ", "plus",
+            " ", "deren", " ", "Geschwindigkeit", " ", "kleiner", " ", "als", 
+           " ", "der", " ", "Anzahl", " ", "der", " ", "Zelle", " ", 
+           RowBox[{"(", "nCells", ")"}], " ", "ist"}], ",", " ", 
+          RowBox[{"falls", " ", "ja"}], ",", " ", 
+          RowBox[{
+           RowBox[{
+           "dann", " ", "ist", " ", "die", " ", "neue", " ", "Position", " ", 
+            "xAutos"}], "+", "vAutos"}]}], " ", "**)"}], "\n", 
+        RowBox[{"(*", 
+         RowBox[{
+          RowBox[{
+          "Falls", " ", "Autos", " ", "außerhalb", " ", "Zellen", " ", 
+           "bewegt"}], ",", " ", 
+          RowBox[{
+          "wird", " ", "Bewegung", " ", "in", " ", "erster", " ", "Zelle", 
+           " ", "fortgesetzt"}], ",", " ", 
+          RowBox[{"da", " ", "Ringstraße"}]}], "*)"}], "\n", "\n", 
+        RowBox[{"{", 
+         RowBox[{"iter", "=", 
+          RowBox[{"Sow", "[", 
+           RowBox[{"xAutos", ",", 
+            RowBox[{"Print", "[", "xAutos", "]"}]}], "]"}]}], "}"}], " ", 
+        RowBox[{"(*", 
+         RowBox[{
+          RowBox[{
+          "Gibt", " ", "nach", " ", "jedem", " ", "Durchlauf", " ", "der", 
+           " ", "for"}], "-", 
+          RowBox[{"Schleife", " ", "xAutos", " ", "aus"}]}], "*)"}], "\n", 
+        RowBox[{"{", 
+         RowBox[{"iter", "=", 
+          RowBox[{"Sow", "[", 
+           RowBox[{"vAutos", ",", 
+            RowBox[{"Print", "[", "vAutos", "]"}]}], "]"}]}], "}"}], "\n", 
+        RowBox[{"{", 
+         RowBox[{"iter", "=", 
+          RowBox[{"Sow", "[", 
+           RowBox[{"dAutos", ",", 
+            RowBox[{"Print", "[", "dAutos", "]"}]}], "]"}]}], "}"}]}]}], "\n",
+       "]"}]}]}], "\n", "]"}]}]], "Code",
  CellFrame->{{0, 0}, {0, 0}},
  CellChangeTimes->{{3.896941388242814*^9, 3.8969414148867836`*^9}, {
    3.896941589817672*^9, 3.89694160009639*^9}, {3.8969417614778695`*^9, 
@@ -391,6 +690,19 @@ Cell[BoxData[
    3.8974672762448654`*^9}, {3.8974678620656424`*^9, 
    3.8974678754166374`*^9}, {3.8974692549809513`*^9, 
    3.8974692555606937`*^9}},ExpressionUUID->"b6644127-ba67-47f7-b818-\
+   3.8973922003778844`*^9}, {3.897467348526291*^9, 3.897467398222397*^9}, {
+   3.8974674314930677`*^9, 3.8974674568424683`*^9}, {3.8974674919918613`*^9, 
+   3.8974675651830797`*^9}, {3.8974676463431826`*^9, 3.897467866269404*^9}, {
+   3.8974679184974003`*^9, 3.8974679466534243`*^9}, {3.8974679796255283`*^9, 
+   3.897468218312733*^9}, {3.8974683743510847`*^9, 3.897468421173266*^9}, {
+   3.897468454310187*^9, 3.8974686050998974`*^9}, {3.8974686865345397`*^9, 
+   3.8974686928908234`*^9}, {3.897468890169888*^9, 3.8974691375479116`*^9}, {
+   3.8974691986101894`*^9, 3.897469313960752*^9}, {3.8974695071638594`*^9, 
+   3.897469508533123*^9}, {3.897469609430664*^9, 3.8974698191766124`*^9}, {
+   3.8974698893388777`*^9, 3.897469889759965*^9}, {3.8974699784548616`*^9, 
+   3.8974700368148465`*^9}, {3.897470100984964*^9, 3.8974701131977487`*^9}, {
+   3.8974701561487494`*^9, 3.897470160777334*^9}, {3.8974702486430225`*^9, 
+   3.8974702778387604`*^9}},ExpressionUUID->"b6644127-ba67-47f7-b818-\
 393446ff29b4"],
 
 Cell[CellGroupData[{
@@ -668,8 +980,8 @@ Cell[BoxData[
 }, Open  ]],
 
 Cell["\<\
-Im Dichteplot wird die Anzahl der Autos N \[UDoubleDot]ber einer Anzahl \
-avCells Zellen berechnet und \[UDoubleDot]ber der Zeit t dargestellt.\
+Im Dichteplot wird die Anzahl der Autos N über einer Anzahl \
+avCells Zellen berechnet und über der Zeit t dargestellt.\
 \>", "Text",
  CellChangeTimes->{{3.8974681269108562`*^9, 3.897468227444809*^9}, {
   3.897468480939311*^9, 3.8974684810687046`*^9}, {3.8974685967805853`*^9, 
@@ -679,7 +991,7 @@ dbebe8f35590"],
 Cell[BoxData[
  RowBox[{
   RowBox[{"(*", 
-   RowBox[{"Dichteplot", " ", "\[UDoubleDot]ber", " ", "Zeit"}], "*)"}], "\n", 
+   RowBox[{"Dichteplot", " ", "über", " ", "Zeit"}], "*)"}], "\n", 
   RowBox[{
    RowBox[{"densityplot", "[", 
     RowBox[{
@@ -800,7 +1112,7 @@ Cell[BoxData[
             RowBox[{
              RowBox[{"R2", ":", " ", "Abbremsen"}], ",", " ", 
              RowBox[{
-             "falls", " ", "v", " ", "gr\[ODoubleDot]\[SZ]er", " ", "als", 
+             "falls", " ", "v", " ", "größer", " ", "als", 
               " ", "Abstand", " ", "d"}]}], "*)"}], "\n", 
            RowBox[{"vAutos", "=", 
             RowBox[{"Table", "[", 
@@ -817,7 +1129,7 @@ Cell[BoxData[
            RowBox[{"(*", 
             RowBox[{"R3", ":", " ", 
              RowBox[{
-             "Tr\[ODoubleDot]deln", " ", "mit", " ", "Wahrscheinlichkeit", 
+             "Trödeln", " ", "mit", " ", "Wahrscheinlichkeit", 
               " ", "p"}]}], "*)"}], "\n", 
            RowBox[{"vAutos", "=", 
             RowBox[{"Table", "[", 
@@ -882,7 +1194,7 @@ Cell[BoxData[
             "Erstellen", " ", "Liste", " ", "mit", " ", "Autos", " ", 
              "innerhalb", " ", "vorgegebener", " ", "Region", " ", "von", " ",
               "der", " ", "ersten", " ", "Zelle", " ", "bis", " ", "zur", " ",
-              "frei", " ", "w\[ADoubleDot]hlbaren", " ", "Zelle", " ", 
+              "frei", " ", "wählbaren", " ", "Zelle", " ", 
              "avCells"}], "*)"}], "\n", 
            RowBox[{"regionCars", "=", 
             RowBox[{"Table", "[", 
@@ -898,7 +1210,7 @@ Cell[BoxData[
               RowBox[{"Element", " ", "zu", " ", "density"}], "-", 
               RowBox[{
               "Liste", " ", "mit", " ", "Dichte", " ", "am", " ", "Zeitpunkt",
-                " ", "t", " ", "hinzugef\[UDoubleDot]gt"}]}], ",", " ", 
+                " ", "t", " ", "hinzugefügt"}]}], ",", " ", 
              RowBox[{
              "t", " ", "entspricht", " ", "Reihenfolge", " ", "der", " ", 
               "Liste"}]}], "*)"}], "\n", 
@@ -1011,7 +1323,7 @@ Cell[BoxData[
           RowBox[{
            RowBox[{"R2", ":", " ", "Abbremsen"}], ",", " ", 
            RowBox[{
-           "falls", " ", "v", " ", "gr\[ODoubleDot]\[SZ]er", " ", "als", " ", 
+           "falls", " ", "v", " ", "größer", " ", "als", " ", 
             "Abstand", " ", "d"}]}], "*)"}], "\n", "vAutos"}], "=", 
         RowBox[{
          RowBox[{
@@ -1041,11 +1353,11 @@ Cell[BoxData[
            RowBox[{
            "Letztes", " ", "Auto", " ", "muss", " ", "Abstand", " ", "zum", 
             " ", "ersten", " ", "Auto", " ", 
-            "\[UDoubleDot]berpr\[UDoubleDot]fen"}], "*)"}], "\n", "\n", 
+            "überprüfen"}], "*)"}], "\n", "\n", 
           RowBox[{"(*", 
            RowBox[{"R3", ":", " ", 
             RowBox[{
-            "Tr\[ODoubleDot]deln", " ", "mit", " ", "Wahrscheinlichkeit", " ",
+            "Trödeln", " ", "mit", " ", "Wahrscheinlichkeit", " ",
               "p"}]}], "*)"}], "\n", "vAutos"}], "=", 
          RowBox[{
           RowBox[{
@@ -1335,6 +1647,49 @@ Cell[52364, 1255, 152, 3, 28, "Input",ExpressionUUID->"90588204-6de8-420d-bc0f-9
 Cell[52519, 1260, 154, 3, 28, "Input",ExpressionUUID->"1b54f91f-e526-47f0-97cc-00ca49dd4e44"],
 Cell[52676, 1265, 130, 3, 28, "Input",ExpressionUUID->"1defa545-7515-4813-8868-7ae98def4a7a"],
 Cell[52809, 1270, 156, 3, 28, "Input",ExpressionUUID->"21941ecf-27d9-46f7-b70e-3dcede48169b"]
+Cell[580, 22, 174, 3, 88, "Title",ExpressionUUID->"c94b437a-1292-4e06-93c8-e3afc21af39e"],
+Cell[757, 27, 181, 3, 47, "Subtitle",ExpressionUUID->"4a778878-2d08-4a68-8d6c-1d2c2bc037f1"],
+Cell[941, 32, 291, 8, 72, "Text",ExpressionUUID->"c8b6f279-8ff9-4728-bdd9-d96e3ae791bc"],
+Cell[1235, 42, 21808, 447, 806, "Code",ExpressionUUID->"b6644127-ba67-47f7-b818-393446ff29b4"],
+Cell[CellGroupData[{
+Cell[23068, 493, 836, 12, 45, "Code",ExpressionUUID->"5ec85292-eb52-4810-a710-924d3ba73db4"],
+Cell[CellGroupData[{
+Cell[23929, 509, 589, 12, 19, "Print",ExpressionUUID->"340d9420-2201-424c-907b-5c582d70653b"],
+Cell[24521, 523, 582, 12, 19, "Print",ExpressionUUID->"62fff189-a3bd-471d-9c54-ae1f70dcb359"],
+Cell[25106, 537, 580, 12, 19, "Print",ExpressionUUID->"dcc8c324-d77d-4a6a-bc14-89eaaa009d20"],
+Cell[25689, 551, 587, 12, 19, "Print",ExpressionUUID->"0408f91a-ef2a-4e71-8a76-ff69f3b5be62"],
+Cell[26279, 565, 580, 12, 19, "Print",ExpressionUUID->"edb8f174-20af-4e56-ade7-a29d387a7298"],
+Cell[26862, 579, 580, 12, 19, "Print",ExpressionUUID->"6d1d6348-95b3-4a47-bf7a-636fc28887ab"],
+Cell[27445, 593, 587, 12, 19, "Print",ExpressionUUID->"b482b9ff-6829-4c7e-8e5f-6c3be530090a"],
+Cell[28035, 607, 582, 12, 19, "Print",ExpressionUUID->"268aec12-a07e-487b-87a6-27ae9d0b0d5d"],
+Cell[28620, 621, 582, 12, 19, "Print",ExpressionUUID->"022fb5c7-5232-4cbd-a5a7-c29ca85b0ff5"],
+Cell[29205, 635, 588, 12, 19, "Print",ExpressionUUID->"50e96bb1-af0e-41d7-b4e4-0e334147888c"],
+Cell[29796, 649, 582, 12, 19, "Print",ExpressionUUID->"37224d34-e026-448a-afd5-19d745ada3a6"],
+Cell[30381, 663, 582, 12, 19, "Print",ExpressionUUID->"50b41ada-071a-4c58-8e33-e0dedd9ac0d8"],
+Cell[30966, 677, 588, 12, 19, "Print",ExpressionUUID->"5620fc16-a3df-4393-9dba-afafa8fcf386"],
+Cell[31557, 691, 582, 12, 19, "Print",ExpressionUUID->"ad574d29-c8ed-4827-8a6b-0940832e5f40"],
+Cell[32142, 705, 580, 12, 19, "Print",ExpressionUUID->"dc25752e-de67-47c8-83d1-4d41273c79c9"],
+Cell[32725, 719, 586, 12, 19, "Print",ExpressionUUID->"8974264c-a96c-456f-8935-b304f5449e37"],
+Cell[33314, 733, 580, 12, 19, "Print",ExpressionUUID->"6c2339c3-c7b7-4e8e-acef-265eaa5eeb42"],
+Cell[33897, 747, 580, 12, 19, "Print",ExpressionUUID->"eb71b5eb-aab3-4347-a98e-798e9d50d0f5"]
+}, Open  ]]
+}, Open  ]],
+Cell[34504, 763, 303, 4, 45, "Code",ExpressionUUID->"cfbd44c6-2647-4aba-a816-0ef23f143be9"],
+Cell[34810, 769, 399, 5, 45, "Code",ExpressionUUID->"15d06f0e-bc1a-4f0d-9ec2-70582d3a022b"],
+Cell[CellGroupData[{
+Cell[35234, 778, 9556, 265, 507, "Code",ExpressionUUID->"f2916a39-248e-4823-8b20-14db512562e5"],
+Cell[44793, 1045, 280, 5, 28, "Output",ExpressionUUID->"93bf75c8-ff14-4225-b114-1437d571ac5b"],
+Cell[45076, 1052, 280, 5, 28, "Output",ExpressionUUID->"481e8f71-7b7c-461c-bb03-a1b53a795fc2"],
+Cell[45359, 1059, 270, 5, 28, "Output",ExpressionUUID->"65488dce-9dd2-4083-916f-20a3334d3819"],
+Cell[45632, 1066, 280, 5, 28, "Output",ExpressionUUID->"af68b965-cae5-4299-906a-de7e46ecdd8e"],
+Cell[45915, 1073, 280, 5, 28, "Output",ExpressionUUID->"c07a1344-9d43-41ec-96b7-1d22107c5b71"],
+Cell[46198, 1080, 280, 5, 28, "Output",ExpressionUUID->"c5403de2-7fa9-409f-87ac-cb6536fc3a9b"],
+Cell[46481, 1087, 280, 5, 28, "Output",ExpressionUUID->"b059af45-503d-45cc-acc2-46413c355d59"]
+}, Open  ]],
+Cell[46776, 1095, 152, 3, 25, "Input",ExpressionUUID->"90588204-6de8-420d-bc0f-9c40b6eebdf8"],
+Cell[46931, 1100, 154, 3, 25, "Input",ExpressionUUID->"1b54f91f-e526-47f0-97cc-00ca49dd4e44"],
+Cell[47088, 1105, 130, 3, 25, "Input",ExpressionUUID->"1defa545-7515-4813-8868-7ae98def4a7a"],
+Cell[47221, 1110, 156, 3, 25, "Input",ExpressionUUID->"21941ecf-27d9-46f7-b70e-3dcede48169b"]
 }, Open  ]]
 }
 ]
