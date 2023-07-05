@@ -118,7 +118,7 @@ Print[xAutos]; (*Print kostet viel Rechenzeit*)
 ]
 (*Plotten Dichte*)
 Delete[density,1]; (*L\[ODoubleDot]schen erstes Nullelement*)
-Print[density];
+(*Print[density];*)
 ListPlot[density]
 ]
 
@@ -127,34 +127,4 @@ densityplot[7,30,15,5,0.3,10]
 (*Table[density[[t]],{t,1,15}]*)
 
 
-(*Test Code zum Fehler finden in NaSch*)
-nCar=3;
-nCells=10;
-tMax=1;
-vMax=5;
-p=0.3;
-xAutos=Sort[RandomSample[Range[nCells],nCar]]
-vAutos=RandomInteger[{0,vMax},nCar]
-dAutos=Table[xAutos[[n+1]]-xAutos[[n]],{n,1,nCar-1}] (*Arrays fangen bei 1 an, n+1 muss bei letzten beiden Autos nCar sein*)
-(*
-(*Verkehrsregeln aus NaSch-Modell implementieren*)
-For[i=0,i<=tMax,i++, (*Schleife Runden bis tMax*)
 
-(*R1: Beschleunigen, falls vMax noch nicht erreicht*)
-vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,1,nCar}]
-
-(*R2: Abbremsen, falls v gr\[ODoubleDot]\[SZ]er als Abstand d*)
-vAutos=Table[If[n<nCar,Min[dAutos[[n]],vAutos[[n]]],Min[nCells-xAutos[[n]]+xAutos[[1]],vAutos[[n]]]],{n,1,nCar}] (*Letztes Auto muss Abstand zum ersten Auto \[UDoubleDot]berpr\[UDoubleDot]fen*)
-
-(*R3: Tr\[ODoubleDot]deln mit Wahrscheinlichkeit p*)
-vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,1,nCar}]
-
-(*R4: Fahren um vAutos Zellen*)
-xAutos=Table[If[xAutos[[n+vAutos[[n]]]]<=nCells,xAutos[[n]]=xAutos[[n+vAutos[[n]]]],xAutos[[n]]=xAutos[[n+vAutos[[n]]]]-nCells],{n,1,nCar}]
-Return[xAutos]
-]*)
-
-vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,1,nCar}]
-vAutos=Table[If[n<nCar,Min[dAutos[[n]],vAutos[[n]]],Min[nCells-xAutos[[n]]+xAutos[[1]],vAutos[[n]]]],{n,1,nCar}]
-vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,1,nCar}]
-xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}]
