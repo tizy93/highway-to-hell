@@ -51,7 +51,7 @@ vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,1,nCar}];
 vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,1,nCar}]; (*Tr\[ODoubleDot]deln solange noch nicht v=0*)
 (**\[CapitalUDoubleDot]berpr\[UDoubleDot]f, ob die Tr\[ODoubleDot]delnwahrscheinligkeit (p) null oder eins ist also ob das auto tr\[ODoubleDot]delt oder nicht **)
 (*Falls zuf\[ADoubleDot]llige Zahl nicht im gegebenen Intervall, bleibt v gleich*)
-
+hallo . m
 (*R4: Fahren um vAutos Zellen*)
 xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}];
 (**\[CapitalUDoubleDot]berpr\[UDoubleDot]f, ob die Tr\[ODoubleDot]delnwahrscheinligkeit (p) null oder eins ist also ob das auto tr\[ODoubleDot]delt oder nicht **)
@@ -151,10 +151,6 @@ vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,1,nCar}]
 vAutos=Table[If[n<nCar,Min[dAutos[[n]],vAutos[[n]]],Min[nCells-xAutos[[n]]+xAutos[[1]],vAutos[[n]]]],{n,1,nCar}]
 vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,1,nCar}]
 xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}]
-
-
-(* ::Input:: *)
-(**)
 
 
 (* ::Input:: *)
