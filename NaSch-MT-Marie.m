@@ -82,7 +82,7 @@ densityplot[nCar_,nCells_,tMax_,vMax_,p_,avCells_]:=Module[
 xAutos=Sort[RandomSample[Range[nCells],nCar]];
 vAutos=RandomInteger[{0,vMax},nCar]; 
 
-(*Erzeugen einelementige Liste mit Dichte*) (*nicht synchronisiert*)
+(*Erzeugen einelementige Liste mit Dichte*) 
 density=Table[0,{n,1}]
 
 (*Verkehrsregeln aus NaSch-Modell implementieren*)
@@ -110,13 +110,11 @@ regionCars=Table[xAutos[[n]],{n,1,avCells}];
 AppendTo[density,Length[regionCars]/nCells];
 ]
 (*Plotten Dichte*)
-(*Ab hier Ver\[ADoubleDot]nderungen noch nicht synchronisiert*)
 Delete[density,1]; (*L\[ODoubleDot]scht erstes, unwichtiges Element aus density*)
-Plot[density,{0,tMax}];
+Plot[density[[t]],{t,0,tMax}];
 ]
 
 
-(*Noch nicht synchronisiert*)
 densityplot[7,30,5,5,0.3,10]
 
 
@@ -151,10 +149,6 @@ vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,1,nCar}]
 vAutos=Table[If[n<nCar,Min[dAutos[[n]],vAutos[[n]]],Min[nCells-xAutos[[n]]+xAutos[[1]],vAutos[[n]]]],{n,1,nCar}]
 vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,1,nCar}]
 xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}]
-
-
-(* ::Input:: *)
-(**)
 
 
 (* ::Input:: *)
