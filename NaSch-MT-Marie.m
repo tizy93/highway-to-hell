@@ -118,15 +118,13 @@ Print[xAutos]; (*Print kostet viel Rechenzeit*)
 ]
 (*Plotten Dichte*)
 Delete[density,1]; (*L\[ODoubleDot]schen erstes Nullelement*)
+Print[density];
 ListPlot[density]
 ]
 
 
 densityplot[7,30,15,5,0.3,10]
-Table[density[[t]],{t,1,15}]
-
-
-
+(*Table[density[[t]],{t,1,15}]*)
 
 
 (*Test Code zum Fehler finden in NaSch*)
@@ -160,7 +158,3 @@ vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,1,nCar}]
 vAutos=Table[If[n<nCar,Min[dAutos[[n]],vAutos[[n]]],Min[nCells-xAutos[[n]]+xAutos[[1]],vAutos[[n]]]],{n,1,nCar}]
 vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,1,nCar}]
 xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}]
-
-
-(* ::Input:: *)
-(**)
