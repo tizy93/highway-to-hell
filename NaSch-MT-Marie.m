@@ -116,14 +116,14 @@ AppendTo[density,Length[regionCars]/avCells];
 Print[xAutos]; (*Print kostet viel Rechenzeit*)
 *)
 ]
-(*(*Plotten Dichte*)
-Plot[density[[t]],{t,1,tMax}];*)
+(*Plotten Dichte*)
+Delete[density,1]; (*L\[ODoubleDot]schen erstes Nullelement*)
+ListPlot[density]
 ]
 
 
-densityplot[7,30,5,5,0.3,10]
-tMax=5;
-Table[density[[t]],{t,1,tMax}]
+densityplot[7,30,15,5,0.3,10]
+Table[density[[t]],{t,1,15}]
 
 
 
