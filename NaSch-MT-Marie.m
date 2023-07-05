@@ -57,9 +57,12 @@ xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[
 (**\[CapitalUDoubleDot]berpr\[UDoubleDot]f, ob die Tr\[ODoubleDot]delnwahrscheinligkeit (p) null oder eins ist also ob das auto tr\[ODoubleDot]delt oder nicht **)
 (*Falls Autos au\[SZ]erhalb Zellen bewegt, wird Bewegung in erster Zelle fortgesetzt, da Ringstra\[SZ]e*)
 
-{iter=Sow[xAutos,Print[xAutos]]} (*Gibt nach jedem Durchlauf der for-Schleife xAutos aus*)
-{iter=Sow[vAutos,Print[vAutos]]}
-{iter=Sow[dAutos,Print[dAutos]]}
+(*
+Print[xAutos];
+Print[vAutos];
+Print[dAutos];
+Print[density];
+*)
 ]
 ]
 
@@ -74,7 +77,7 @@ NaSch[10,30,5,5,0.3]
 (*Dichteplot \[UDoubleDot]ber Zeit*)
 densityplot[nCar_,nCells_,tMax_,vMax_,p_,avCells_]:=Module[
 (*lokale Variablen*)
-{xAutos,vAutos,dAutos},
+{xAutos,vAutos,dAutos,regionCars,density},
 
 (*NaSch-Modell*)
 
@@ -83,7 +86,7 @@ xAutos=Sort[RandomSample[Range[nCells],nCar]];
 vAutos=RandomInteger[{0,vMax},nCar]; 
 
 (*Erzeugen einelementige Liste mit Dichte*) 
-density=Table[0,{n,1}]
+density=Table[Nothing,{n,1}];
 
 (*Verkehrsregeln aus NaSch-Modell implementieren*)
 For[i=0,i<=tMax,i++, 
@@ -105,17 +108,25 @@ vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]
 xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}];
 
 (*Erstellen Liste mit Autos innerhalb vorgegebener Region von der ersten Zelle bis zur frei w\[ADoubleDot]hlbaren Zelle avCells*)
-regionCars=Table[xAutos[[n]],{n,1,avCells}];
+regionCars=DeleteCases[Table[If[xAutos[[n]]<=avCells,xAutos[[n]],],{n,1,nCar}],Null]; (*Nullen mit DeleteCases gel\[ODoubleDot]scht*)
 (*Element zu density-Liste mit Dichte am Zeitpunkt t hinzugef\[UDoubleDot]gt, t entspricht Reihenfolge der Liste*)
-AppendTo[density,Length[regionCars]/nCells];
+AppendTo[density,Length[regionCars]/avCells];
+(*Ausgabe xAutos*)
+(*
+Print[xAutos]; (*Print kostet viel Rechenzeit*)
+*)
 ]
-(*Plotten Dichte*)
-Delete[density,1]; (*L\[ODoubleDot]scht erstes, unwichtiges Element aus density*)
-Plot[density[[t]],{t,0,tMax}];
+(*(*Plotten Dichte*)
+Plot[density[[t]],{t,1,tMax}];*)
 ]
 
 
 densityplot[7,30,5,5,0.3,10]
+tMax=5;
+Table[density[[t]],{t,1,tMax}]
+
+
+
 
 
 (*Test Code zum Fehler finden in NaSch*)
