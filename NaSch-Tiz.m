@@ -103,6 +103,7 @@ d immer -1, da freie Zellen vor Auto gemeint sind*)
    Mittel=Mean [value]
    var=Variance[value]*)
     (*mittlere geschwindigkeit*)
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 <<<<<<< Updated upstream
  
@@ -113,6 +114,9 @@ d immer -1, da freie Zellen vor Auto gemeint sind*)
 =======
  
 >>>>>>> main
+=======
+ 
+>>>>>>> Stashed changes
 
 
 NaSch[10,30,5,5,0.3]
