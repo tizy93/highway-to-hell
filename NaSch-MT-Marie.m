@@ -177,5 +177,5 @@ Print[viAutos];
 vdhisto[7,30,15,5,0.3]
 
 
-(*for schleife in eine funktion auslagern und sie danach implementieren mit andere funktionen, funktionen in eine funktion* packen um sie nicht zu wiederholen*)
+
 (*mittlere geschwindigkeit und varianz (siehe documentation) des mittlere abstand von alle runde i=0 -> i=tMax, dann beide plotten. letzte punnkt : die zusammen plotten und kommentieren)

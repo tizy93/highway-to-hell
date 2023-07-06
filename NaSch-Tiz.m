@@ -1,8 +1,7 @@
 (* ::Package:: *)
 
 (*Modul Nagel-Schreckenberg Modell*)
-
-NaSch[nCar_, nCells_, tMax_, vMax_, p_] :=
+Mittelgeschw[nCar_, nCells_, tMax_, vMax_, p_,vMittel_,dVar_] :=
     Module[
       (*Eingabe Anzahl der Autos nCar, Anzahl der Zellen nCells, Simulationsdauer
      tMax, 
@@ -86,16 +85,22 @@ d immer -1, da freie Zellen vor Auto gemeint sind*)
                 ];
             (*Falls Autos au\[SZ]erhalb Zellen bewegt, wird Bewegung in erster
                  Zelle fortgesetzt, da Ringstra\[SZ]e*)
-            (*Print[xAutos];*)
-           
-            Print[vAutos]
-           (* Print[dAutos];*)
+            (*Print[xAutos];
+            
+            Print[dAutos];*)
+            Print[vAutos];
         ]
-    ]
-    
+        (*vMittel = Mean[vAutos];
+        Print[vMittel];
+        dVar=Variance[dAutos];
+        Print[dVar];*)
+     ]
+     
+   (*value={1,2,2,3,4,5,6}
+   Mittel=Mean [value]
+   var=Variance[value]*)
+    (*mittlere geschwindigkeit*)
+ 
 
 
 NaSch[10,30,5,5,0.3]
-
-
-
