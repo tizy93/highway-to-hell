@@ -186,4 +186,89 @@ Histogram[diAutos,{1},AxesLabel->{d,Anzahl Autos mit Indexed[d,"i"]},ColorFuncti
 vdhisto[100,300,15,5,0.3]
 
 
-(*mittlere geschwindigkeit und varianz (siehe documentation) des mittlere abstand von alle runde i=0 -> i=tMax, dann beide plotten. letzte punnkt : die zusammen plotten und kommentieren)
+(*Velocity-Dependent-Randomization Modell*)
+vdrNaSch[nCar_,nCells_,tMax_,vMax_,p_]:=Module[
+
+(*lokale Variablen*)
+{xAutos,vAutos,dAutos},
+
+(*Autos haben Position x und Geschwindigkeit v zum vorderen Auto*)
+xAutos=Sort[RandomSample[Range[nCells],nCar]];
+(** erzeugt eine zuf\[ADoubleDot]llige (Random) Liste (Position) "xAutos" ohne wiederholungen (Sample) und in aufsteigende Reihen sortiert (Sort)**)
+vAutos=RandomInteger[{0,vMax},nCar];
+(**zuordnet eine zuf\[ADoubleDot]llige Zahl zu jedes Auto **)
+
+(*Verkehrsregeln aus NaSch-Modell implementieren*)
+For[i=0,i<=tMax,i++, (*Schleife der Runden bis tMax*)
+
+(*Freie Zellen d vor dem Auto bis zum vorderen*)
+dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,1,nCar-1}];
+AppendTo[dAutos,If[xAutos[[nCar]]<Max[xAutos],xAutos[[1]]-xAutos[[nCar]]-1,nCells-xAutos[[nCar]]+Min[xAutos]-1]];
+
+(*R1: Beschleunigen, falls vMax noch nicht erreicht*)
+vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,1,nCar}];
+
+(*R2: Abbremsen, falls v gr\[ODoubleDot]\[SZ]er als Abstand d*)
+vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,1,nCar}]; 
+
+(*R3: Tr\[ODoubleDot]deln mit Wahrscheinlichkeit p*)
+vAutos=Table[If[vAutos[[n]]==0,If[RandomReal[{0,1}]<=p+0.1,vAutos[[n]],vAutos[[n]]],If[RandomReal[{0,1}]<=p,vAutos[[n]]=vAutos[[n]]-1,vAutos[[n]]]],{n,1,nCar}];
+(*Wenn Auto steht ist p um 0.1 erh\[ODoubleDot]ht*)
+
+(*R4: Fahren um vAutos Zellen*)
+xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}];
+
+(*VDR: beim Anfahren nur mit einer Wahrscheinlichkeit p+q anfahren*)
+]
+]
+
+
+(*Berechnung mittlere v \[UDoubleDot]ber t, Varianz des mittleren Abstands und des Verkehrsflusses \[UDoubleDot]ber t*)
+Mittelv[nCar_,nCells_,tMax_,vMax_,p_]:=Module[
+(*lokale Variablen*)
+{xAutos, vAutos, dAutos, vMittel, dVar,t,dMittel,m},
+
+(*NaSch-Modell*)
+
+(*Autos haben Position x und Geschwindigkeit v zum vorderen Auto*)
+xAutos=Sort[RandomSample[Range[nCells],nCar]];
+vAutos=RandomInteger[{0,vMax},nCar]; 
+
+(*Erzeugen einelementige Liste mit vMittel und dMittel*) 
+vMittel = Table [Nothing, {t,1}];
+dMittel= Table[Nothing , {m,1}];
+
+(*Verkehrsregeln aus NaSch-Modell implementieren*)
+For[i=0,i<=tMax,i++, 
+
+(*Freie Zellen d vor dem Auto bis zum vorderen*)
+dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,1,nCar-1}]; 
+AppendTo[dAutos,If[xAutos[[nCar]]<Max[xAutos],xAutos[[1]]-xAutos[[nCar]]-1,nCells-xAutos[[nCar]]+Min[xAutos]-1]];
+
+(*R1: Beschleunigen, falls vMax noch nicht erreicht*)
+vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,1,nCar}];
+
+(*R2: Abbremsen, falls v gr\[ODoubleDot]\[SZ]er als Abstand d*)
+vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,1,nCar}]; 
+
+(*R3: Tr\[ODoubleDot]deln mit Wahrscheinlichkeit p*)
+vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,1,nCar}]; 
+
+(*R4: Fahren um vAutos Zellen*)
+xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}];
+
+AppendTo[vMittel, N[Mean[vAutos],4]];
+AppendTo[dMittel, N[Mean[dAutos],4]];
+Print[dAutos];
+];
+Print[vMittel];
+dVar= N[Variance[dMittel],10];
+Print[dVar];
+Print[dMittel];
+]
+
+
+Mittelv[30,100,20,5,0.5]
+
+
+
