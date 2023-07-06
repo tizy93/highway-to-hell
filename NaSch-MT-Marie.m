@@ -133,7 +133,7 @@ vdhisto[nCar_,nCells_,tMax_,vMax_,p_]:=Module[
 (*tMax ist betrachteter Zeitpunkt*)
 
 (*lokale Variablen*)
-{xAutos,vAutos,dAutos,viAutos},
+{xAutos,vAutos,dAutos,viAutos,diAutos,i},
 
 (*Autos haben Position x und Geschwindigkeit v zum vorderen Auto*)
 xAutos=Sort[RandomSample[Range[nCells],nCar]];
@@ -168,14 +168,22 @@ vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]
 xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}];
 (*Falls Autos au\[SZ]erhalb Zellen bewegt, wird Bewegung in erster Zelle fortgesetzt, da Ringstra\[SZ]e*)
 ]
-(*Listen Autos mit Geschwingigkeiten v=0,1,2,3,4,5*)
-viAutos=Table[Select[Table[vAutos[[n]],{n,1,nCar}],vAutos[[m]]==i],{i,0,5},{m,1,nCar}];
-Print[viAutos];
+(*Listen Autos mit Geschwindigkeiten v=0,1,2,3,4,5*)
+Clear[viAutos];
+viAutos=Table[Select[Table[vAutos[[n]],{n,1,nCar}],#==i &],{i,0,5}];
+
+(*Listen Abst\[ADoubleDot]nde d=0,1,...,nCar*)
+Clear[diAutos];
+diAutos=Select[Table[Select[Table[dAutos[[n]],{n,1,nCar}],#==i &],{i,0,nCells-nCar-1}],UnsameQ[#, {}] &]; (*Maximaler Abstand ist nCells-nCar-1, falls alle anderen Autos d=0 voneinander*)
+(*L\[ODoubleDot]schen der Abst\[ADoubleDot]nde, die nicht vorkommen*)
+
+Histogram[viAutos,{1},AxesLabel->{v,Anzahl Autos mit Indexed[v,"i"]},ColorFunction->"Pastel",ImageSize->Medium]
+Histogram[diAutos,{1},AxesLabel->{d,Anzahl Autos mit Indexed[d,"i"]},ColorFunction->"Pastel",ImageSize->Medium]
+(*Histogramm z\[ADoubleDot]hlt, wie oft eine Zahl in einer Liste und den Sublisten darin vorkommt*)
 ]
 
 
-vdhisto[7,30,15,5,0.3]
-
+vdhisto[100,300,15,5,0.3]
 
 
 (*mittlere geschwindigkeit und varianz (siehe documentation) des mittlere abstand von alle runde i=0 -> i=tMax, dann beide plotten. letzte punnkt : die zusammen plotten und kommentieren)
