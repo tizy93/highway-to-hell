@@ -55,12 +55,12 @@ ListPlot[density]
 
 
 (*Modul Nagel-Schreckenberg Modell*)
-Meanvarfluss[nCar_, nCells_, tMax_, vMax_, p_] :=
+Meanvarfluss[nCar_, nCells_, tMax_, vMax_, p_,posCell_] :=
     Module[
       (*Eingabe Anzahl der Autos nCar, Anzahl der Zellen nCells, Simulationsdauer
      tMax, 
 Maximalgeschwindigkeit vMax und Tr\[ODoubleDot]delwahrscheinlichkeit p mit Funktionsaufruf
-    *)(*lokale Variablen*){xAutos, vAutos, dAutos, vMittel, dVar,t,dMittel,m,fluss}
+    *)(*lokale Variablen*){xAutos, vAutos, dAutos, vMittel, dVar,t,dMittel,m,fluss,regionCars}
         ,
         (*Autos haben Position x und Geschwindigkeit v zum vorderen Auto
             *)
@@ -71,6 +71,7 @@ Maximalgeschwindigkeit vMax und Tr\[ODoubleDot]delwahrscheinlichkeit p mit Funkt
         vAutos = RandomInteger[{0, vMax}, nCar];
         (**zuordnet eine zuf\[ADoubleDot]llige Zahl zu jedes Auto **)
         (*Mittelgeschwindigkeit*)
+        Clear[vMittel];
          vMittel = Table [Nothing, {t,1}];
         (*dMittel= Table[Nothing , {m,1}];*)
         (*varianz dAuto*)
@@ -114,16 +115,19 @@ Maximalgeschwindigkeit vMax und Tr\[ODoubleDot]delwahrscheinlichkeit p mit Funkt
         (*AppendTo[dMittel, N[Mean[dAutos],6]];*)
         (*varianz dAuto*)
         AppendTo[dVar, N[Variance[dAutos],6]];
-        AppendTo[density]
+        (*Verkehrsfluss*)
+        regionCars=DeleteCases[Table[If[xAutos[[n]]==posCell,xAutos[[n]],],{n,1,nCar}],Null];
+        AppendTo[fluss,Length[regionCars]];
         
         ]
         Print[vMittel];
         (*dVar= N[Variance[dMittel],7];*)
         Print[dVar];
         (*Print[dMittel];*)
-        
-        ListPlot[vMittel]
-        ListPlot[dVar]
+        Print[fluss];
+        ListPlot[fluss,ImageSize->Medium]
+        ListPlot[vMittel,ImageSize->Medium]
+        ListPlot[dVar,ImageSize->Medium]
      ]
      
    (*value={1,2,2,3,4,5,6}
@@ -132,7 +136,7 @@ Maximalgeschwindigkeit vMax und Tr\[ODoubleDot]delwahrscheinlichkeit p mit Funkt
     (*mittlere geschwindigkeit*)
 
 
-Meanvarfluss[30,100,20,10,0.5]
+Meanvarfluss[30,100,20,10,0.5,4]
 
 
 
