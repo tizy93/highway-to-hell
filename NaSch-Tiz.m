@@ -152,7 +152,7 @@ FundamentalD[nCar_, nCells_, tMax_, vMax_, p_,avCells_] :=
       (*Eingabe Anzahl der Autos nCar, Anzahl der Zellen nCells, Simulationsdauer
      tMax, 
 Maximalgeschwindigkeit vMax und Tr\[ODoubleDot]delwahrscheinlichkeit p mit Funktionsaufruf
-    *)(*lokale Variablen*){xAutos, vAutos, dAutos, dMittel, fluss, regionCars, cellCars, density, fundamD,mittelFluss}
+    *)(*lokale Variablen*){xAutos, vAutos, dAutos, dMittel, fluss, regionCars, cellCars, density, fundamD,mittelFluss,tMittelF,tcellCars,tfluss}
         ,
         (*Autos haben Position x und Geschwindigkeit v zum vorderen Auto
             *)
@@ -170,7 +170,7 @@ Maximalgeschwindigkeit vMax und Tr\[ODoubleDot]delwahrscheinlichkeit p mit Funkt
         fluss=Table[Nothing,{n,1}];
         (*mittelwert der fluss*)
         mittelFluss=Table[Nothing,{n,1}];
-                
+               tfluss=Table[Nothing,{n,1}]; 
         (*Verkehrsregeln aus NaSch-Modell implementieren*)
         For[i = 0, i <= tMax, i++,(*Schleife der Runden bis tMax*)(*Freie
              Zellen d vor dem Auto bis zum vorderen*)
@@ -202,6 +202,9 @@ Maximalgeschwindigkeit vMax und Tr\[ODoubleDot]delwahrscheinlichkeit p mit Funkt
             Print[dAutos];
             Print[vAutos];*)
             
+            
+         tcellCars=DeleteCases[Table[If[xAutos[[n]]==avCells,xAutos[[n]],],{n,1,nCar}],Null];
+        AppendTo[tfluss,Length[cellCars]];
         (*Verkehrsfluss*)
         cellCars=Select[DeleteCases[Table[DeleteCases[Table[If[xAutos[[n]]==m,xAutos[[n]],],{n,1,nCar}],Null],{m,1,avCells}],Null],UnsameQ[#,{}]&];
         AppendTo[fluss,Length[cellCars]];
@@ -210,21 +213,24 @@ Maximalgeschwindigkeit vMax und Tr\[ODoubleDot]delwahrscheinlichkeit p mit Funkt
         (*Element zu density-Liste mit Dichte am Zeitpunkt t hinzugef\[UDoubleDot]gt, t entspricht Reihenfolge der Liste*)
         AppendTo[density,Length[regionCars]/avCells];
         (*Print[cellCars];*)
-        
-        ]
        
-        (*Print[fluss];*)
+        ]
+       (*tMittelF=Mean[tfluss];
+       Print[tMittelF];*)
+        Print[fluss];
         Print[mittelFluss];
         Print[density];
+        (*Print[Thread[{density,mittelFluss}]];*)
         ListPlot[density,ImageSize->Medium,AxesLabel->Dichte]
         ListPlot[mittelFluss,ImageSize->Medium,AxesLabel->Mittelfluss]
-        ListPlot[Partition[Join[density,mittelFluss],2],ImageSize->Medium,AxesLabel->{Dichte,Mittelfluss}]
-       Print[Partition[Join[density,mittelFluss],2]];
+        ListPlot[Thread[{density,mittelFluss}],ImageSize->Medium,AxesLabel->{Dichte,Mittelfluss}]
+     
      ]
+     
 
 
 
-FundamentalD[30,100,20,10,0.3,30]
+FundamentalD[30,100,20,10,0.3,10]
 
 
 
