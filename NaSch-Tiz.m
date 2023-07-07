@@ -70,6 +70,7 @@ Maximalgeschwindigkeit vMax und Tr\[ODoubleDot]delwahrscheinlichkeit p mit Funkt
         ListPlot[dVar]
      ]
      (*bla bla bla*)
+    (*test marie*) 
    (*value={1,2,2,3,4,5,6}
    Mittel=Mean [value]
    var=Variance[value]*)
