@@ -67,6 +67,7 @@ Maximalgeschwindigkeit vMax und Tr\[ODoubleDot]delwahrscheinlichkeit p mit Funkt
         Print[dVar];
         (*Print[dMittel];*)
         ListPlot[vMittel]
+        ListPlot[dVar]
      ]
      
    (*value={1,2,2,3,4,5,6}
