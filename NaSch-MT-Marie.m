@@ -272,7 +272,7 @@ Print[dVar];
 Print[fluss];
 ListPlot[vMittel,ImageSize->Medium,ColorFunction->"Rainbow",AxesLabel->{"Zeit t",mittlere Geschwindigkeit OverBar[v]}]
 ListPlot[dVar,ImageSize->Medium,ColorFunction->"Rainbow",AxesLabel->{"Zeit t",Varianz des Abstands d}]
-ListPlot[fluss,ImageSize->Medium,ColorFunction->"Rainbow",AxesLabel->{"Zeit t","Fluss \[UDoubleDot]ber Zelle}]
+ListPlot[fluss,ImageSize->Medium,ColorFunction->"Rainbow",AxesLabel->{"Zeit t","Fluss \[UDoubleDot]ber Zelle"}]
 ]
 
 
