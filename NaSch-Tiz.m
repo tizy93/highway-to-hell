@@ -77,7 +77,5 @@ Maximalgeschwindigkeit vMax und Tr\[ODoubleDot]delwahrscheinlichkeit p mit Funkt
 
 Meanvarfluss[30,100,20,10,0.5]
 
-
-
-
+(*try marie*)
 
