@@ -24,38 +24,35 @@ Maximalgeschwindigkeit vMax und Tr\[ODoubleDot]delwahrscheinlichkeit p mit Funkt
 
 (*Autos haben Position x und Geschwindigkeit v zum vorderen Auto*)
 xAutos=Sort[RandomSample[Range[nCells],nCar]];
-(** erzeugt eine zuf\[ADoubleDot]llige (Random) Liste (Position) "xAutos" ohne wiederholungen (Sample) und in aufsteigende Reihen sortiert (Sort)**)
+(*erzeugt zuf\[ADoubleDot]llige (Random) Liste xAutos ohne Wiederholungen (Sample) in aufsteigender Reihenfolge (Sort)*)
 vAutos=RandomInteger[{0,vMax},nCar];
-(**zuordnet eine zuf\[ADoubleDot]llige Zahl zu jedes Auto **)
+(*ordnet jedem Auto eine zuf\[ADoubleDot]llige Geschwindigkeit von 0 bis vMax zu*)
+(*Einzelne Autos sind gekennzeichnet durch Element-Position in der Liste mit Position xAutos[[n]] und Geschwindigkeit vAutos[[n]]*)
 
 (*Verkehrsregeln aus NaSch-Modell implementieren*)
 For[i=0,i<=tMax,i++, (*Schleife der Runden bis tMax*)
 
 (*Freie Zellen d vor dem Auto bis zum vorderen*)
 dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,1,nCar-1}]; (*In Schleife, damit es geupdatet wird*)
-(**erzeugt der Abstand des Autos mit bedingung dass ein auto kleiner gleich des gr\[ODoubleDot]\[SZ]es xAutos ist, dann ergibt den abstand zwischen zwei Autos **)
-(*Arrays fangen bei 1 an; n+1 muss f\[UDoubleDot]r das letzte gleich nCar sein; Abstand des letzten Autos ist bis zum ersten, da Ringstra\[SZ]e*)
+(*berechnet freie Zellen zum vorderen Auto normal au\[SZ]er f\[UDoubleDot]r Autos au\[SZ]er dem mit h\[ODoubleDot]chster Positition - da Ringstra\[SZ]e sind die freien Zellen geringer als xAutos[[n+1]]-xAutos[[n]]-1*)
+(*Arrays starten mit Element 1; n+1 muss f\[UDoubleDot]r das letzte gleich nCar sein*)
 AppendTo[dAutos,If[xAutos[[nCar]]<Max[xAutos],xAutos[[1]]-xAutos[[nCar]]-1,nCells-xAutos[[nCar]]+Min[xAutos]-1]];
-(**abstand zur n\[ADoubleDot]chste auto (dar\[UDoubleDot]ber bin ich nicht sicher)????**)
-(*Abstand des Autos an Stelle nCar zum ersten wird angeh\[ADoubleDot]ngt;
-d immer -1, da freie Zellen vor Auto gemeint sind*)
+(*Abstand des Autos an letzter Stelle in Liste zum ersten wird angeh\[ADoubleDot]ngt*)
 
 (*R1: Beschleunigen, falls vMax noch nicht erreicht*)
 vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,1,nCar}];
 
 (*R2: Abbremsen, falls v gr\[ODoubleDot]\[SZ]er als Abstand d*)
 vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,1,nCar}]; 
-(**wird \[CapitalUDoubleDot]berpr\[UDoubleDot]ft, ob der Abstand zwischen ein Auto und die vordere gro\[SZ] genug ist **)
 
 (*R3: Tr\[ODoubleDot]deln mit Wahrscheinlichkeit p*)
 vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,1,nCar}]; (*Tr\[ODoubleDot]deln solange noch nicht v=0*)
-(**RandomReal erzeugt ein zuf\[ADoubleDot]llige zahl zwischen 0 und 1, falls das unter p=0,3 liegt dan tr\[ODoubleDot]delt das auto sonst nicht **)
 (*Falls zuf\[ADoubleDot]llige Zahl nicht im gegebenen Intervall, bleibt v gleich*)
 
 (*R4: Fahren um vAutos Zellen*)
 xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}];
-
 (*Falls Autos au\[SZ]erhalb Zellen bewegt, wird Bewegung in erster Zelle fortgesetzt, da Ringstra\[SZ]e*)
+(*Aktualisieren der Positionen nicht anhand Verschieben der Autos innerhalb der Liste, sondern durch Ver\[ADoubleDot]ndern der Eintr\[ADoubleDot]ge in xAutos*)
 
 (*
 Print[xAutos];
@@ -119,7 +116,7 @@ Print[xAutos]; (*Print kostet viel Rechenzeit*)
 (*Plotten Dichte*)
 Delete[density,1]; (*L\[ODoubleDot]schen erstes Nullelement*)
 (*Print[density];*)
-ListPlot[density]
+ListPlot[density,ImageSize->Medium,ColorFunction->"Rainbow",Frame->True,FrameLabel->{"Zeit t","Dichte \[Rho]"}]
 ]
 
 
@@ -135,38 +132,30 @@ vdhisto[nCar_,nCells_,tMax_,vMax_,p_]:=Module[
 (*lokale Variablen*)
 {xAutos,vAutos,dAutos,viAutos,diAutos,i},
 
+(*NaSch-Modell*)
+
 (*Autos haben Position x und Geschwindigkeit v zum vorderen Auto*)
 xAutos=Sort[RandomSample[Range[nCells],nCar]];
-(** erzeugt eine zuf\[ADoubleDot]llige (Random) Liste (Position) "xAutos" ohne wiederholungen (Sample) und in aufsteigende Reihen sortiert (Sort)**)
 vAutos=RandomInteger[{0,vMax},nCar];
-(**zuordnet eine zuf\[ADoubleDot]llige Zahl zu jedes Auto **)
 
 (*Verkehrsregeln aus NaSch-Modell implementieren*)
-For[i=0,i<=tMax,i++, (*Schleife der Runden bis tMax*)
+For[i=0,i<=tMax,i++,
 
 (*Freie Zellen d vor dem Auto bis zum vorderen*)
-dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,1,nCar-1}]; (*In Schleife, damit es geupdatet wird*)
-(**erzeugt der Abstand des Autos mit bedingung dass ein auto kleiner gleich des gr\[ODoubleDot]\[SZ]es xAutos ist, dann ergibt den abstand zwischen zwei Autos **)
-(*Arrays fangen bei 1 an; n+1 muss f\[UDoubleDot]r das letzte gleich nCar sein; Abstand des letzten Autos ist bis zum ersten, da Ringstra\[SZ]e*)
+dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,1,nCar-1}]; 
 AppendTo[dAutos,If[xAutos[[nCar]]<Max[xAutos],xAutos[[1]]-xAutos[[nCar]]-1,nCells-xAutos[[nCar]]+Min[xAutos]-1]];
-(*Abstand des Autos an Stelle nCar zum ersten wird angeh\[ADoubleDot]ngt;
-d immer -1, da freie Zellen vor Auto gemeint sind*)
 
 (*R1: Beschleunigen, falls vMax noch nicht erreicht*)
 vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,1,nCar}];
 
 (*R2: Abbremsen, falls v gr\[ODoubleDot]\[SZ]er als Abstand d*)
 vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,1,nCar}]; 
-(**wird \[CapitalUDoubleDot]berpr\[UDoubleDot]ft, ob der Abstand zwischen ein Auto und die vordere gro\[SZ] genug ist **)
 
 (*R3: Tr\[ODoubleDot]deln mit Wahrscheinlichkeit p*)
-vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,1,nCar}]; (*Tr\[ODoubleDot]deln solange noch nicht v=0*)
-(**RandomReal erzeugt ein zuf\[ADoubleDot]llige zahl zwischen 0 und 1, falls das unter p=0,3 liegt dan tr\[ODoubleDot]delt das auto sonst nicht **)
-(*Falls zuf\[ADoubleDot]llige Zahl nicht im gegebenen Intervall, bleibt v gleich*)
+vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,1,nCar}]; 
 
 (*R4: Fahren um vAutos Zellen*)
 xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}];
-(*Falls Autos au\[SZ]erhalb Zellen bewegt, wird Bewegung in erster Zelle fortgesetzt, da Ringstra\[SZ]e*)
 ]
 (*Listen Autos mit Geschwindigkeiten v=0,1,2,3,4,5*)
 Clear[viAutos];
@@ -194,12 +183,10 @@ vdrNaSch[nCar_,nCells_,tMax_,vMax_,p_]:=Module[
 
 (*Autos haben Position x und Geschwindigkeit v zum vorderen Auto*)
 xAutos=Sort[RandomSample[Range[nCells],nCar]];
-(** erzeugt eine zuf\[ADoubleDot]llige (Random) Liste (Position) "xAutos" ohne wiederholungen (Sample) und in aufsteigende Reihen sortiert (Sort)**)
 vAutos=RandomInteger[{0,vMax},nCar];
-(**zuordnet eine zuf\[ADoubleDot]llige Zahl zu jedes Auto **)
 
 (*Verkehrsregeln aus NaSch-Modell implementieren*)
-For[i=0,i<=tMax,i++, (*Schleife der Runden bis tMax*)
+For[i=0,i<=tMax,i++, 
 
 (*Freie Zellen d vor dem Auto bis zum vorderen*)
 dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,1,nCar-1}];
@@ -226,7 +213,7 @@ xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[
 (*Berechnung mittlere v \[UDoubleDot]ber t, Varianz des mittleren Abstands und des Verkehrsflusses \[UDoubleDot]ber t*)
 Meanvarfluss[nCar_,nCells_,tMax_,vMax_,p_,posCell_]:=Module[
 (*lokale Variablen*)
-{xAutos, vAutos, dAutos, vMittel, dVar,t,dMittel,m,fluss,regionCars},
+{xAutos, vAutos, dAutos, vMittel, dVar,dMittel,fluss,regionCars},
 
 (*NaSch-Modell*)
 
@@ -236,8 +223,8 @@ vAutos=RandomInteger[{0,vMax},nCar];
 
 (*Erzeugen einelementige Liste mit vMittel, dVar und fluss*) 
 Clear[vMittel];
-vMittel = Table [Nothing, {t,1}];
-dVar = Table[Nothing, {t,1}];
+vMittel=Table[Nothing,{n,1}];
+dVar=Table[Nothing,{n,1}];
 fluss=Table[Nothing,{n,1}];
 
 (*Verkehrsregeln aus NaSch-Modell implementieren*)
@@ -259,7 +246,7 @@ vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]
 (*R4: Fahren um vAutos Zellen*)
 xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}];
 
-(*mittlere geschwindigkeit*)
+(*mittlere Geschwindigkeit*)
 AppendTo[vMittel, N[Mean[vAutos],6]];
 (*Varianz dAutos*)
 AppendTo[dVar, N[Variance[dAutos],6]];
@@ -267,18 +254,20 @@ AppendTo[dVar, N[Variance[dAutos],6]];
 regionCars=DeleteCases[Table[If[xAutos[[n]]==posCell,xAutos[[n]],],{n,1,nCar}],Null];
 AppendTo[fluss,Length[regionCars]];
 ]
-Print[vMittel];
+(*Print[vMittel];
 Print[dVar];
-Print[fluss];
-ListPlot[vMittel,ImageSize->Medium,ColorFunction->"Rainbow",AxesLabel->{"Zeit t",mittlere Geschwindigkeit OverBar[v]}]
-ListPlot[dVar,ImageSize->Medium,ColorFunction->"Rainbow",AxesLabel->{"Zeit t",Varianz des Abstands d}]
-ListPlot[fluss,ImageSize->Medium,ColorFunction->"Rainbow",AxesLabel->{"Zeit t","Fluss \[UDoubleDot]ber Zelle"}]
+Print[fluss];*);
+ResourceFunction["PlotGrid"][{
+{ListPlot[vMittel,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,mittlere Geschwindigkeit OverBar[v]}]},
+{ListPlot[dVar,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,Varianz des Abstands d}]},
+{ListPlot[fluss,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,"Fluss \[UDoubleDot]ber Zelle"}]}
+},
+ImageSize->Large,FrameLabel->{"Zeit t",None}
+]
 ]
 
 
 Meanvarfluss[30,100,20,5,0.5,4]
-
-
 
 
 (*Fundamentalplot*)
@@ -330,19 +319,25 @@ AppendTo[mittelFluss, Mean[fluss]];
 regionCars=DeleteCases[Table[If[xAutos[[n]]<=avCells,xAutos[[n]],],{n,1,nCar}],Null]; (*Nullen mit DeleteCases gel\[ODoubleDot]scht*)
 AppendTo[density,Length[regionCars]/avCells];
 
-](*tMittelF=Mean[tfluss];
-Print[tMittelF];*)
+]
+(*tMittelF=Mean[tfluss];
+Print[tMittelF];
 Print[fluss];
 Print[mittelFluss];
 Print[density];
-(*Print[Thread[{density,mittelFluss}]];*)
-ListPlot[density,ImageSize->Medium,AxesLabel->Dichte]
-ListPlot[mittelFluss,ImageSize->Medium,AxesLabel->Mittelfluss]
-ListPlot[Thread[{density,mittelFluss}],ImageSize->Medium,AxesLabel->{Dichte,Mittelfluss}]
+Print[Thread[{density,mittelFluss}]];*)
+
+(*ListPlot[density,ImageSize->Medium,ColorFunction->"Rainbow",AxesLabel->{"Zeit t","Dichte \[Rho]"}]
+ListPlot[mittelFluss,ImageSize->Medium,ColorFunction->"Rainbow",AxesLabel->{"Zeit t","Mittelwert Fluss \[UDoubleDot]ber betrachtete Zellen"}]*);
+ResourceFunction["PlotGrid"][{
+{ListPlot[density,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,"Dichte \[Rho]"}]},
+{ListPlot[mittelFluss,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,"Mittelwert Fluss \[UDoubleDot]ber betrachtete Zellen"}]}
+},
+ImageSize->Medium,FrameLabel->{"Zeit t",None}
+]
+ListPlot[Thread[{density,mittelFluss}],ImageSize->Medium,Frame->True,ColorFunction->"Rainbow",FrameLabel->{"Dichte \[Rho]","Mittelwert Fluss \[UDoubleDot]ber betrachtete Zellen"}]
 ]
 
 
 FundamentalD[30,100,20,10,0.3,10]
-
-
 
