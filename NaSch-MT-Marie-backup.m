@@ -175,12 +175,45 @@ Histogram[diAutos,{1},AxesLabel->{d,Anzahl Autos mit Indexed[d,"i"]},ColorFuncti
 vdhisto[100,300,15,5,0.3]
 
 
-(*Berechnung mittlere v \[UDoubleDot]ber t, Varianz des mittleren Abstands und des Verkehrsflusses \[UDoubleDot]ber t*)
-Meanvarfluss[nCar_,nCells_,tMax_,vMax_,p_]:=Module[
-(*betrachtete Zelle ist letzte Zelle der Stra\[SZ]e*)
+(*Velocity-Dependent-Randomization Modell*)
+vdrNaSch[nCar_,nCells_,tMax_,vMax_,p_]:=Module[
 
 (*lokale Variablen*)
-{xAutos, vAutos, dAutos, vMittel, dVar, savefluss, savexAutos, m},
+{xAutos,vAutos,dAutos},
+
+(*Autos haben Position x und Geschwindigkeit v zum vorderen Auto*)
+xAutos=Sort[RandomSample[Range[nCells],nCar]];
+vAutos=RandomInteger[{0,vMax},nCar];
+
+(*Verkehrsregeln aus NaSch-Modell implementieren*)
+For[i=0,i<=tMax,i++, 
+
+(*Freie Zellen d vor dem Auto bis zum vorderen*)
+dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,1,nCar-1}];
+AppendTo[dAutos,If[xAutos[[nCar]]<Max[xAutos],xAutos[[1]]-xAutos[[nCar]]-1,nCells-xAutos[[nCar]]+Min[xAutos]-1]];
+
+(*R1: Beschleunigen, falls vMax noch nicht erreicht*)
+vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,1,nCar}];
+
+(*R2: Abbremsen, falls v gr\[ODoubleDot]\[SZ]er als Abstand d*)
+vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,1,nCar}]; 
+
+(*R3: Tr\[ODoubleDot]deln mit Wahrscheinlichkeit p*)
+vAutos=Table[If[vAutos[[n]]==0,If[RandomReal[{0,1}]<=p+0.1,vAutos[[n]],vAutos[[n]]],If[RandomReal[{0,1}]<=p,vAutos[[n]]=vAutos[[n]]-1,vAutos[[n]]]],{n,1,nCar}];
+(*Wenn Auto steht ist p um 0.1 erh\[ODoubleDot]ht*)
+
+(*R4: Fahren um vAutos Zellen*)
+xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}];
+
+(*VDR: beim Anfahren nur mit einer Wahrscheinlichkeit p+q anfahren, hier q=0.1 gew\[ADoubleDot]hlt -> lieber Eingabe?*)
+]
+]
+
+
+(*Berechnung mittlere v \[UDoubleDot]ber t, Varianz des mittleren Abstands und des Verkehrsflusses \[UDoubleDot]ber t*)
+Meanvarfluss[nCar_,nCells_,tMax_,vMax_,p_,posCell_]:=Module[
+(*lokale Variablen*)
+{xAutos, vAutos, dAutos, vMittel, dVar,dMittel,fluss,regionCars},
 
 (*NaSch-Modell*)
 
@@ -192,6 +225,221 @@ vAutos=RandomInteger[{0,vMax},nCar];
 Clear[vMittel];
 vMittel=Table[Nothing,{n,1}];
 dVar=Table[Nothing,{n,1}];
+fluss=Table[Nothing,{n,1}];
+
+(*Verkehrsregeln aus NaSch-Modell implementieren*)
+For[i=0,i<=tMax,i++, 
+
+(*Freie Zellen d vor dem Auto bis zum vorderen*)
+dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,1,nCar-1}]; 
+AppendTo[dAutos,If[xAutos[[nCar]]<Max[xAutos],xAutos[[1]]-xAutos[[nCar]]-1,nCells-xAutos[[nCar]]+Min[xAutos]-1]];
+
+(*R1: Beschleunigen, falls vMax noch nicht erreicht*)
+vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,1,nCar}];
+
+(*R2: Abbremsen, falls v gr\[ODoubleDot]\[SZ]er als Abstand d*)
+vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,1,nCar}]; 
+
+(*R3: Tr\[ODoubleDot]deln mit Wahrscheinlichkeit p*)
+vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,1,nCar}]; 
+
+(*R4: Fahren um vAutos Zellen*)
+xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}];
+
+(*mittlere Geschwindigkeit*)
+AppendTo[vMittel, N[Mean[vAutos],6]];
+(*Varianz dAutos*)
+AppendTo[dVar, N[Variance[dAutos],6]];
+(*Verkehrsfluss*)
+regionCars=DeleteCases[Table[If[xAutos[[n]]==posCell,xAutos[[n]],],{n,1,nCar}],Null];
+AppendTo[fluss,Length[regionCars]];
+]
+(*Print[vMittel];
+Print[dVar];
+Print[fluss];*);
+ResourceFunction["PlotGrid"][{
+{ListPlot[vMittel,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,mittlere Geschwindigkeit OverBar[v]}]},
+{ListPlot[dVar,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,Varianz des Abstands d}]},
+{ListPlot[fluss,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,"Fluss \[UDoubleDot]ber Zelle"}]}
+},
+ImageSize->Large,FrameLabel->{"Zeit t",None}
+]
+(*Korrelation mittlere Geschwindigkeit und Varianz des Abstands*)
+ListPlot[Thread[vMittel,dVar],ImageSize->Medium,ColorFunction->"Rainbow",Frame->True,FrameLabel->{mittlere Geschwindigkeit OverBar[v],Varianz des Abstands d}]
+]
+
+
+Meanvarfluss[30,100,20,5,0.5,4]
+
+
+(*Fundamentalplot*)
+FundamentalD[nCar_,nCells_,tMax_,vMax_,p_,avCells_]:=Module[
+(*lokale Variablen*)
+{xAutos, vAutos, dAutos, dMittel, fluss, regionCars, cellCars, density, fundamD,mittelFluss,tMittelF,tcellCars,tfluss,addfluss,addfldens},
+
+(*NaSch-Modell*)
+
+(*Autos haben Position x und Geschwindigkeit v zum vorderen Auto*)
+xAutos=Sort[RandomSample[Range[nCells],nCar]];
+vAutos=RandomInteger[{0,vMax},nCar]; 
+
+(*Erzeugen einelementige Liste mit Dichte, Fluss, dem Mittelwert des Flusses und des zeitlichen Mittel des Flusses*) 
+density=Table[Nothing,{n,1}];
+fluss=Table[Nothing,{n,1}];
+mittelFluss=Table[Nothing,{n,1}];
+
+(*Verkehrsregeln aus NaSch-Modell implementieren*)
+For[i=0,i<=tMax,i++, 
+
+(*Freie Zellen d vor dem Auto bis zum vorderen*)
+dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,1,nCar-1}]; 
+AppendTo[dAutos,If[xAutos[[nCar]]<Max[xAutos],xAutos[[1]]-xAutos[[nCar]]-1,nCells-xAutos[[nCar]]+Min[xAutos]-1]];
+
+(*R1: Beschleunigen, falls vMax noch nicht erreicht*)
+vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,1,nCar}];
+
+(*R2: Abbremsen, falls v gr\[ODoubleDot]\[SZ]er als Abstand d*)
+vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,1,nCar}]; 
+
+(*R3: Tr\[ODoubleDot]deln mit Wahrscheinlichkeit p*)
+vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,1,nCar}]; 
+
+(*R4: Fahren um vAutos Zellen*)
+xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}];
+
+(*Verkehrsfluss gemittelt \[UDoubleDot]ber Zellen 1 bis avCells*)
+cellCars=Select[DeleteCases[Table[DeleteCases[Table[If[xAutos[[n]]==m,xAutos[[n]],],{n,1,nCar}],Null],{m,1,avCells}],Null],UnsameQ[#,{}]&];
+AppendTo[fluss,Length[cellCars]];
+AppendTo[mittelFluss, Mean[fluss]];
+
+(*Dichte von Zellen 1 bis avCells*)
+regionCars=DeleteCases[Table[If[xAutos[[n]]<=avCells,xAutos[[n]],],{n,1,nCar}],Null]; (*Nullen mit DeleteCases gel\[ODoubleDot]scht*)
+AppendTo[density,Length[regionCars]/avCells];
+]
+(*Einzelne Plots*)
+(*ListPlot[density,ImageSize->Medium,ColorFunction->"Rainbow",AxesLabel->{"Zeit t","Dichte \[Rho]"}]
+ListPlot[mittelFluss,ImageSize->Medium,ColorFunction->"Rainbow",AxesLabel->{"Zeit t","Mittelwert Fluss \[UDoubleDot]ber betrachtete Zellen"}]*);
+
+(*Plots zusammen*)
+ResourceFunction["PlotGrid"][{
+{ListPlot[density,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,"Dichte \[Rho]"}]},
+{ListPlot[mittelFluss,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,"Mittelwert Fluss \[UDoubleDot]ber betrachtete Zellen"}]}
+},
+ImageSize->Medium,FrameLabel->{"Zeit t",None}
+]
+ListPlot[Thread[{density,mittelFluss}],ImageSize->Medium,Frame->True,ColorFunction->"Rainbow",FrameLabel->{"Dichte \[Rho]","Mittelwert Fluss \[UDoubleDot]ber betrachtete Zellen"}]
+]
+
+
+FundamentalD[30,100,20,10,0.3,10]
+
+
+
+(*Fundamentalplot*)
+addFundamentalD[nCells_,tMax_,vMax_,p_]:=Module[
+(*Fluss wird f\[UDoubleDot]r Dichten 0 bis 1 berechnet*)
+
+(*lokale Variablen*)
+{xAutos, vAutos, dAutos, nCar, cellCars, density, tMittelF, tcellCars, tfluss, addfluss, savexAutos, m,fluss},
+
+(*Erzeugen einelementige Liste mit Dichte, Fluss, und Fluss f\[UDoubleDot]r jede Anzahl an Autos*) 
+density=Table[Nothing,{n,1}];
+tfluss=Table[Nothing,{n,1}]; (*unten verwendet f\[UDoubleDot]r addfluss*)
+fluss=Table[Nothing,{n,1}];
+
+(*NaSch-Modell*)
+
+(*Schleife f\[UDoubleDot]r ansteigende Dichte/Anzahlen an Autos*)
+For[nCar=0,nCar<=nCells,nCar++,
+
+(*Autos haben Position x und Geschwindigkeit v zum vorderen Auto*)
+xAutos=Sort[RandomSample[Range[nCells],nCar]];
+vAutos=RandomInteger[{0,vMax},nCar]; 
+
+(*Liste zum Speichern von xAutos aus dem vorherigen Zeitschritt*)
+savexAutos=xAutos;
+(*Index zum \[CapitalUDoubleDot]berpr\[UDoubleDot]fen der Positionen, startet von der \[UDoubleDot]berpr\[UDoubleDot]ften Zelle nCells*)(*Fluss als Durchfluss von Position nCells zu 1*)
+m=nCar;
+addfluss=0;
+
+(*Verkehrsregeln aus NaSch-Modell implementieren*)
+For[i=0,i<=tMax,i++, 
+
+(*Freie Zellen d vor dem Auto bis zum vorderen*)
+dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,1,nCar-1}]; 
+AppendTo[dAutos,If[xAutos[[nCar]]<Max[xAutos],xAutos[[1]]-xAutos[[nCar]]-1,nCells-xAutos[[nCar]]+Min[xAutos]-1]];
+
+(*R1: Beschleunigen, falls vMax noch nicht erreicht*)
+vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,1,nCar}];
+
+(*R2: Abbremsen, falls v gr\[ODoubleDot]\[SZ]er als Abstand d*)
+vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,1,nCar}]; 
+
+(*R3: Tr\[ODoubleDot]deln mit Wahrscheinlichkeit p*)
+vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,1,nCar}]; 
+
+(*R4: Fahren um vAutos Zellen*)
+xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}];
+
+(*Verkehrsfluss durch letzte Zelle -> Anzahl Autos durch Zelle pro Zeitschritt*)
+If[m==0,m=nCar,m=m];
+If[xAutos[[m]]<savexAutos[[m]],
+addfluss=addfluss+1;
+m=m-1;,
+addfluss=addfluss;
+]
+Clear[savexAutos];
+savexAutos=xAutos;
+]
+
+(*Dichte \[UDoubleDot]ber die gesamte Stra\[SZ]e*)
+AppendTo[density,nCar/nCells];
+
+(*Verkehrsfluss f\[UDoubleDot]r Dichte nCar/nCells*);
+AppendTo[fluss,addfluss];
+]
+(*Fehlend: f\[UDoubleDot]r verschiedene p -> im Aufruf selbst*)
+(*Fundamentalplot mit addfluss*);
+ListPlot[Thread[{density,fluss/tMax}],ImageSize->Medium,Frame->True,FrameLabel->{"Dichte \[Rho]","Zeitliches Mittel des Flusses \[UDoubleDot]ber letzte Zelle"},PlotStyle->RGBColor[Random[],Random[],Random[]]]
+]
+
+
+(* ::Code:: *)
+(**)
+
+
+addFundamentalD[100,20,5,0]
+addFundamentalD[100,20,5,0.1]
+addFundamentalD[100,20,5,0.15]
+addFundamentalD[100,20,5,0.2]
+addFundamentalD[100,20,5,0.25]
+addFundamentalD[100,20,5,0.3]
+addFundamentalD[100,20,5,0.5]
+addFundamentalD[100,20,5,0.75]
+addFundamentalD[100,20,5,1]
+
+
+
+
+
+(*Berechnung mittlere v \[UDoubleDot]ber t, Varianz des mittleren Abstands und des Verkehrsflusses \[UDoubleDot]ber t*)
+Meanvarfluss2[nCar_,nCells_,tMax_,vMax_,p_]:=Module[
+(*betrachtete Zelle ist letzte Zelle der Stra\[SZ]e*)
+(*lokale Variablen*)
+{xAutos, vAutos, dAutos, vMittel, dVar,dMittel,fluss,regionCars,savexAutos,m,savefluss},
+
+(*NaSch-Modell*)
+
+(*Autos haben Position x und Geschwindigkeit v zum vorderen Auto*)
+xAutos=Sort[RandomSample[Range[nCells],nCar]];
+vAutos=RandomInteger[{0,vMax},nCar]; 
+
+(*Erzeugen einelementige Liste mit vMittel, dVar und fluss*) 
+Clear[vMittel];
+vMittel=Table[Nothing,{n,1}];
+dVar=Table[Nothing,{n,1}];
+fluss=Table[Nothing,{n,1}];
+(*Liste f\[UDoubleDot]r Variante Fluss mit savexAutos*)
 savefluss=Table[Nothing,{n,1}];
 
 (*Liste zum Speichern von xAutos aus dem vorherigen Zeitschritt*)
@@ -237,174 +485,20 @@ AppendTo[vMittel, N[Mean[vAutos],6]];
 (*Varianz dAutos*)
 AppendTo[dVar, N[Variance[dAutos],6]];
 
-];
-ResourceFunction["PlotGrid"][{
-{ListPlot[vMittel,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,"mittlere Geschwindigkeit" OverBar[v]}]},
-{ListPlot[dVar,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,"Varianz des Abstands d"}]},
-{ListPlot[savefluss,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,Fluss pro Zeitschritt}]}
-},
-ImageSize->Large,FrameLabel->{"Zeit t",None}
 ]
+(*Print[vMittel];
+Print[dVar];*);
+ResourceFunction["PlotGrid"][{
+{ListPlot[vMittel,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,mittlere Geschwindigkeit OverBar[v]}]},
+{ListPlot[dVar,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,Varianz des Abstands d}]}
+},
+ImageSize->Medium,FrameLabel->{"Zeit t",None}
+]
+ListPlot[savefluss,ImageSize->Medium,Frame->True,FrameLabel->{"Zeit t","Fluss pro Zeitschritt durch letzte Zelle"}]
 
 (*Korrelation mittlere Geschwindigkeit und Varianz des Abstands*)
-ListPlot[Thread[{dVar,vMittel}],ImageSize->Medium,ColorFunction->"Rainbow",Frame->True,FrameLabel->{"Varianz des Abstands d","mittlere Geschwindigkeit" OverBar[v]}]
+ListPlot[Thread[{dVar,vMittel}],ImageSize->Medium,ColorFunction->"Rainbow",Frame->True,FrameLabel->{Varianz des Abstands d,mittlere Geschwindigkeit OverBar[v]}]
 ]
 
 
-Meanvarfluss[10,40,50,5,0.15]
-
-
-(*Fundamentalplot*)
-FundamentalD[nCells_,tMax_,vMax_,p_]:=Module[
-(*Fluss wird f\[UDoubleDot]r Dichten 0 bis 1 berechnet*)
-
-(*lokale Variablen*)
-{xAutos, vAutos, dAutos, nCar, density, addfluss, savexAutos, m, fluss},
-
-(*Erzeugen einelementige Liste mit Dichte, Fluss, und Fluss f\[UDoubleDot]r jede Anzahl an Autos*) 
-density=Table[Nothing,{n,1}];
-fluss=Table[Nothing,{n,1}];
-
-(*NaSch-Modell*)
-
-(*Schleife f\[UDoubleDot]r ansteigende Dichte/Anzahlen an Autos*)
-For[nCar=0,nCar<=nCells,nCar++,
-
-(*Autos haben Position x und Geschwindigkeit v zum vorderen Auto*)
-xAutos=Sort[RandomSample[Range[nCells],nCar]];
-vAutos=RandomInteger[{0,vMax},nCar]; 
-
-(*Liste zum Speichern von xAutos aus dem vorherigen Zeitschritt*)
-savexAutos=xAutos;
-(*Index zum \[CapitalUDoubleDot]berpr\[UDoubleDot]fen der Positionen, startet von der \[UDoubleDot]berpr\[UDoubleDot]ften Zelle nCells*)(*Fluss als Durchfluss von Position nCells zu 1*)
-m=nCar;
-addfluss=0;
-
-(*Verkehrsregeln aus NaSch-Modell implementieren*)
-For[i=0,i<=tMax,i++, 
-
-(*Freie Zellen d vor dem Auto bis zum vorderen*)
-dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,1,nCar-1}]; 
-AppendTo[dAutos,If[xAutos[[nCar]]<Max[xAutos],xAutos[[1]]-xAutos[[nCar]]-1,nCells-xAutos[[nCar]]+Min[xAutos]-1]];
-
-(*R1: Beschleunigen, falls vMax noch nicht erreicht*)
-vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,1,nCar}];
-
-(*R2: Abbremsen, falls v gr\[ODoubleDot]\[SZ]er als Abstand d*)
-vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,1,nCar}]; 
-
-(*R3: Tr\[ODoubleDot]deln mit Wahrscheinlichkeit p*)
-vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,1,nCar}]; 
-
-(*R4: Fahren um vAutos Zellen*)
-xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}];
-
-(*Verkehrsfluss durch letzte Zelle -> Anzahl Autos durch Zelle pro Zeitschritt*)
-If[m==0,m=nCar,m=m];
-If[xAutos[[m]]<savexAutos[[m]],
-addfluss=addfluss+1;
-m=m-1;,
-addfluss=addfluss;
-]
-Clear[savexAutos];
-savexAutos=xAutos;
-]
-
-(*Dichte \[UDoubleDot]ber die gesamte Stra\[SZ]e*)
-AppendTo[density,nCar/nCells];
-
-(*Verkehrsfluss f\[UDoubleDot]r Dichte nCar/nCells*);
-AppendTo[fluss,addfluss];
-]
-(*Fehlend: f\[UDoubleDot]r verschiedene p -> im Aufruf selbst*)
-(*Fundamentalplot mit addfluss*);
-ListPlot[Thread[{density,fluss/tMax}],ImageSize->Medium,Frame->True,FrameLabel->{"Dichte \[Rho]","Zeitliches Mittel des Flusses \[UDoubleDot]ber letzte Zelle"},
-PlotStyle->RandomChoice[{Red,Orange,Yellow,LightGreen,LightBlue,Blue,Purple,Pink}]] (*Punkte hell f\[UDoubleDot]r dunklen Hintergrund in sp\[ADoubleDot]terem Notebook*)
-]
-
-
-FundamentalD[100,20,5,0]
-(*FundamentalD[100,20,5,0.1]
-FundamentalD[100,20,5,0.15]
-FundamentalD[100,20,5,0.2]
-FundamentalD[100,20,5,0.25]
-FundamentalD[100,20,5,0.3]
-FundamentalD[100,20,5,0.5]
-FundamentalD[100,20,5,0.75]
-FundamentalD[100,20,5,1]*)
-
-
-(*Velocity-Dependent-Randomization Modell mit Fundamentalplots*)
-vdrNaSch[nCells_,tMax_,vMax_,p_,q_]:=Module[
-(*q ist zus\[ADoubleDot]tzliche Wahrscheinlichkeit zum Tr\[ODoubleDot]deln beim Anfahren*)
-
-(*lokale Variablen*)
-{xAutos,vAutos,dAutos, nCar, density, addfluss, savexAutos, m, fluss},
-
-(*Erzeugen einelementige Liste mit Dichte, Fluss, und Fluss f\[UDoubleDot]r jede Anzahl an Autos*) 
-density=Table[Nothing,{n,1}];
-fluss=Table[Nothing,{n,1}];
-
-(*Schleife f\[UDoubleDot]r ansteigende Dichte/Anzahlen an Autos*)
-For[nCar=0,nCar<=nCells,nCar++,
-
-(*Autos haben Position x und Geschwindigkeit v zum vorderen Auto*)
-xAutos=Sort[RandomSample[Range[nCells],nCar]];
-vAutos=RandomInteger[{0,vMax},nCar];
-
-(*Liste zum Speichern von xAutos aus dem vorherigen Zeitschritt*)
-savexAutos=xAutos;
-(*Index zum \[CapitalUDoubleDot]berpr\[UDoubleDot]fen der Positionen, startet von der \[UDoubleDot]berpr\[UDoubleDot]ften Zelle nCells*)(*Fluss als Durchfluss von Position nCells zu 1*)
-m=nCar;
-addfluss=0;
-
-(*Verkehrsregeln aus NaSch-Modell implementieren*)
-For[i=0,i<=tMax,i++, 
-
-(*Freie Zellen d vor dem Auto bis zum vorderen*)
-dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,1,nCar-1}];
-AppendTo[dAutos,If[xAutos[[nCar]]<Max[xAutos],xAutos[[1]]-xAutos[[nCar]]-1,nCells-xAutos[[nCar]]+Min[xAutos]-1]];
-
-(*R1: Beschleunigen, falls vMax noch nicht erreicht*)
-vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,1,nCar}];
-
-(*R2: Abbremsen, falls v gr\[ODoubleDot]\[SZ]er als Abstand d*)
-vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,1,nCar}]; 
-
-(*R3: Tr\[ODoubleDot]deln mit Wahrscheinlichkeit p*)
-vAutos=Table[If[vAutos[[n]]==0,If[RandomReal[{0,1}]<=p+q,vAutos[[n]],vAutos[[n]]],If[RandomReal[{0,1}]<=p,vAutos[[n]]=vAutos[[n]]-1,vAutos[[n]]]],{n,1,nCar}];
-(*Wenn Auto steht ist p um q erh\[ODoubleDot]ht*)
-
-(*R4: Fahren um vAutos Zellen*)
-xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}];
-
-(*VDR: beim Anfahren nur mit einer Wahrscheinlichkeit p+q anfahren -> lieber im Modul festlegen?*)
-
-(*Verkehrsfluss durch letzte Zelle -> Anzahl Autos durch Zelle pro Zeitschritt*)
-If[m==0,m=nCar,m=m];
-If[xAutos[[m]]<savexAutos[[m]],
-addfluss=addfluss+1;
-m=m-1;,
-addfluss=addfluss;
-]
-Clear[savexAutos];
-savexAutos=xAutos;
-]
-(*Dichte \[UDoubleDot]ber die gesamte Stra\[SZ]e*)
-AppendTo[density,nCar/nCells];
-
-(*Verkehrsfluss f\[UDoubleDot]r Dichte nCar/nCells*);
-AppendTo[fluss,addfluss];
-]
-(*Fehlend: f\[UDoubleDot]r verschiedene p -> im Aufruf selbst*)
-(*Fundamentalplot mit addfluss*);
-ListPlot[Thread[{density,fluss/tMax}],ImageSize->Medium,Frame->True,FrameLabel->{"Dichte \[Rho]","Zeitliches Mittel des Flusses \[UDoubleDot]ber letzte Zelle"},
-PlotStyle->RandomChoice[{Red,Orange,Yellow,LightGreen,LightBlue,Blue,Purple,Pink}]] (*Hell f\[UDoubleDot]r dunklen Hintergrund in sp\[ADoubleDot]terem Notebook*)
-]
-
-
-vdrNaSch[70,20,5,0.15,0.1]
-
-
-(* ::Code:: *)
-(**)
+Meanvarfluss2[10,40,50,5,0.15]
