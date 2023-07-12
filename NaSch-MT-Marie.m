@@ -33,24 +33,24 @@ vAutos=RandomInteger[{0,vMax},nCar];
 For[i=0,i<=tMax,i++, (*Schleife der Runden bis tMax*)
 
 (*Freie Zellen d vor dem Auto bis zum vorderen*)
-dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,1,nCar-1}]; (*In Schleife, damit es geupdatet wird*)
+dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,nCar-1}]; (*In Schleife, damit es geupdatet wird*)
 (*berechnet freie Zellen zum vorderen Auto normal au\[SZ]er f\[UDoubleDot]r Autos au\[SZ]er dem mit h\[ODoubleDot]chster Positition - da Ringstra\[SZ]e sind die freien Zellen geringer als xAutos[[n+1]]-xAutos[[n]]-1*)
 (*Arrays starten mit Element 1; n+1 muss f\[UDoubleDot]r das letzte gleich nCar sein*)
 AppendTo[dAutos,If[xAutos[[nCar]]<Max[xAutos],xAutos[[1]]-xAutos[[nCar]]-1,nCells-xAutos[[nCar]]+Min[xAutos]-1]];
 (*Abstand des Autos an letzter Stelle in Liste zum ersten wird angeh\[ADoubleDot]ngt*)
 
 (*R1: Beschleunigen, falls vMax noch nicht erreicht*)
-vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,1,nCar}];
+vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,nCar}];
 
 (*R2: Abbremsen, falls v gr\[ODoubleDot]\[SZ]er als Abstand d*)
-vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,1,nCar}]; 
+vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,nCar}]; 
 
 (*R3: Tr\[ODoubleDot]deln mit Wahrscheinlichkeit p*)
-vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,1,nCar}]; (*Tr\[ODoubleDot]deln solange noch nicht v=0*)
+vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,nCar}]; (*Tr\[ODoubleDot]deln solange noch nicht v=0*)
 (*Falls zuf\[ADoubleDot]llige Zahl nicht im gegebenen Intervall, bleibt v gleich*)
 
 (*R4: Fahren um vAutos Zellen*)
-xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}];
+xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,nCar}];
 (*Falls Autos au\[SZ]erhalb Zellen bewegt, wird Bewegung in erster Zelle fortgesetzt, da Ringstra\[SZ]e*)
 (*Aktualisieren der Positionen nicht anhand Verschieben der Autos innerhalb der Liste, sondern durch Ver\[ADoubleDot]ndern der Eintr\[ADoubleDot]ge in xAutos*)
 
@@ -89,20 +89,20 @@ density=Table[Nothing,{n,1}];
 For[i=0,i<=tMax,i++, 
 
 (*Freie Zellen d vor dem Auto bis zum vorderen*)
-dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,1,nCar-1}]; 
+dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,nCar-1}]; 
 AppendTo[dAutos,If[xAutos[[nCar]]<Max[xAutos],xAutos[[1]]-xAutos[[nCar]]-1,nCells-xAutos[[nCar]]+Min[xAutos]-1]];
 
 (*R1: Beschleunigen, falls vMax noch nicht erreicht*)
-vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,1,nCar}];
+vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,nCar}];
 
 (*R2: Abbremsen, falls v gr\[ODoubleDot]\[SZ]er als Abstand d*)
-vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,1,nCar}]; 
+vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,nCar}]; 
 
 (*R3: Tr\[ODoubleDot]deln mit Wahrscheinlichkeit p*)
-vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,1,nCar}]; 
+vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,nCar}]; 
 
 (*R4: Fahren um vAutos Zellen*)
-xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}];
+xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,nCar}];
 
 (*Erstellen Liste mit Autos innerhalb vorgegebener Region von der ersten Zelle bis zur frei w\[ADoubleDot]hlbaren Zelle avCells*)
 regionCars=DeleteCases[Table[If[xAutos[[n]]<=avCells,xAutos[[n]],],{n,1,nCar}],Null]; (*Nullen mit DeleteCases gel\[ODoubleDot]scht*)
@@ -142,20 +142,20 @@ vAutos=RandomInteger[{0,vMax},nCar];
 For[i=0,i<=tMax,i++,
 
 (*Freie Zellen d vor dem Auto bis zum vorderen*)
-dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,1,nCar-1}]; 
+dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,nCar-1}]; 
 AppendTo[dAutos,If[xAutos[[nCar]]<Max[xAutos],xAutos[[1]]-xAutos[[nCar]]-1,nCells-xAutos[[nCar]]+Min[xAutos]-1]];
 
 (*R1: Beschleunigen, falls vMax noch nicht erreicht*)
-vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,1,nCar}];
+vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,nCar}];
 
 (*R2: Abbremsen, falls v gr\[ODoubleDot]\[SZ]er als Abstand d*)
-vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,1,nCar}]; 
+vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,nCar}]; 
 
 (*R3: Tr\[ODoubleDot]deln mit Wahrscheinlichkeit p*)
-vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,1,nCar}]; 
+vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,nCar}]; 
 
 (*R4: Fahren um vAutos Zellen*)
-xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}];
+xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,nCar}];
 ]
 (*Listen Autos mit Geschwindigkeiten v=0,1,2,3,4,5*)
 Clear[viAutos];
@@ -172,7 +172,7 @@ Histogram[diAutos,{1},AxesLabel->{d,Anzahl Autos mit Indexed[d,"i"]},ColorFuncti
 ]
 
 
-vdhisto[100,300,15,5,0.3]
+vdhisto[300,300,15,5,0.3]
 
 
 (*Berechnung mittlere v \[UDoubleDot]ber t, Varianz des mittleren Abstands und des Verkehrsflusses \[UDoubleDot]ber t*)
@@ -180,7 +180,7 @@ Meanvarfluss[nCar_,nCells_,tMax_,vMax_,p_]:=Module[
 (*betrachtete Zelle ist letzte Zelle der Stra\[SZ]e*)
 
 (*lokale Variablen*)
-{xAutos, vAutos, dAutos, vMittel, dVar, savefluss, savexAutos, m},
+{xAutos,vAutos,dAutos,vMittel,dVar,savefluss,savexAutos,m},
 
 (*NaSch-Modell*)
 
@@ -203,20 +203,20 @@ m=nCar;
 For[i=0,i<=tMax,i++, 
 
 (*Freie Zellen d vor dem Auto bis zum vorderen*)
-dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,1,nCar-1}]; 
+dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,nCar-1}]; 
 AppendTo[dAutos,If[xAutos[[nCar]]<Max[xAutos],xAutos[[1]]-xAutos[[nCar]]-1,nCells-xAutos[[nCar]]+Min[xAutos]-1]];
 
 (*R1: Beschleunigen, falls vMax noch nicht erreicht*)
-vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,1,nCar}];
+vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,nCar}];
 
 (*R2: Abbremsen, falls v gr\[ODoubleDot]\[SZ]er als Abstand d*)
-vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,1,nCar}]; 
+vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,nCar}]; 
 
 (*R3: Tr\[ODoubleDot]deln mit Wahrscheinlichkeit p*)
-vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,1,nCar}]; 
+vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,nCar}]; 
 
 (*R4: Fahren um vAutos Zellen*)
-xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}];
+xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,nCar}];
 
 (*Verkehrsfluss durch letzte Zelle*)
 (*\[CapitalUDoubleDot]berpr\[UDoubleDot]ft, ob Auto mit h\[ODoubleDot]chster Position \[UDoubleDot]ber Stra\[SZ]enende hinaus auf den Anfang zur\[UDoubleDot]ck gefahren ist 
@@ -259,7 +259,7 @@ FundamentalD[nCells_,tMax_,vMax_,p_]:=Module[
 (*Fluss wird f\[UDoubleDot]r Dichten 0 bis 1 berechnet*)
 
 (*lokale Variablen*)
-{xAutos, vAutos, dAutos, nCar, density, addfluss, savexAutos, m, fluss},
+{xAutos,vAutos,dAutos,nCar,density,addfluss,savexAutos,m,fluss},
 
 (*Erzeugen einelementige Liste mit Dichte, Fluss, und Fluss f\[UDoubleDot]r jede Anzahl an Autos*) 
 density=Table[Nothing,{n,1}];
@@ -284,20 +284,20 @@ addfluss=0;
 For[i=0,i<=tMax,i++, 
 
 (*Freie Zellen d vor dem Auto bis zum vorderen*)
-dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,1,nCar-1}]; 
+dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,nCar-1}]; 
 AppendTo[dAutos,If[xAutos[[nCar]]<Max[xAutos],xAutos[[1]]-xAutos[[nCar]]-1,nCells-xAutos[[nCar]]+Min[xAutos]-1]];
 
 (*R1: Beschleunigen, falls vMax noch nicht erreicht*)
-vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,1,nCar}];
+vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,nCar}];
 
 (*R2: Abbremsen, falls v gr\[ODoubleDot]\[SZ]er als Abstand d*)
-vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,1,nCar}]; 
+vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,nCar}]; 
 
 (*R3: Tr\[ODoubleDot]deln mit Wahrscheinlichkeit p*)
-vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,1,nCar}]; 
+vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]]],{n,nCar}]; 
 
 (*R4: Fahren um vAutos Zellen*)
-xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}];
+xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,nCar}];
 
 (*Verkehrsfluss durch letzte Zelle -> Anzahl Autos durch Zelle pro Zeitschritt*)
 If[m==0,m=nCar,m=m];
@@ -334,12 +334,12 @@ FundamentalD[100,20,5,0.75]
 FundamentalD[100,20,5,1]*)
 
 
-(*Velocity-Dependent-Randomization Modell mit Fundamentalplots*)
+(*Fundamentalplots des Velocity-Dependent-Randomization Modells*)
 vdrNaSch[nCells_,tMax_,vMax_,p_,q_]:=Module[
 (*q ist zus\[ADoubleDot]tzliche Wahrscheinlichkeit zum Tr\[ODoubleDot]deln beim Anfahren*)
 
 (*lokale Variablen*)
-{xAutos,vAutos,dAutos, nCar, density, addfluss, savexAutos, m, fluss},
+{xAutos,vAutos,dAutos,nCar,density,addfluss,savexAutos,m,fluss},
 
 (*Erzeugen einelementige Liste mit Dichte, Fluss, und Fluss f\[UDoubleDot]r jede Anzahl an Autos*) 
 density=Table[Nothing,{n,1}];
@@ -362,21 +362,21 @@ addfluss=0;
 For[i=0,i<=tMax,i++, 
 
 (*Freie Zellen d vor dem Auto bis zum vorderen*)
-dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,1,nCar-1}];
+dAutos=Table[If[xAutos[[n]]<Max[xAutos],xAutos[[n+1]]-xAutos[[n]]-1,nCells-xAutos[[n]]+Min[xAutos]-1],{n,nCar-1}];
 AppendTo[dAutos,If[xAutos[[nCar]]<Max[xAutos],xAutos[[1]]-xAutos[[nCar]]-1,nCells-xAutos[[nCar]]+Min[xAutos]-1]];
 
 (*R1: Beschleunigen, falls vMax noch nicht erreicht*)
-vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,1,nCar}];
+vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,nCar}];
 
 (*R2: Abbremsen, falls v gr\[ODoubleDot]\[SZ]er als Abstand d*)
-vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,1,nCar}]; 
+vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,nCar}]; 
 
 (*R3: Tr\[ODoubleDot]deln mit Wahrscheinlichkeit p*)
-vAutos=Table[If[vAutos[[n]]==0,If[RandomReal[{0,1}]<=p+q,vAutos[[n]],vAutos[[n]]],If[RandomReal[{0,1}]<=p,vAutos[[n]]=vAutos[[n]]-1,vAutos[[n]]]],{n,1,nCar}];
+vAutos=Table[If[vAutos[[n]]==0,If[RandomReal[{0,1}]<=p+q,vAutos[[n]],vAutos[[n]]],If[RandomReal[{0,1}]<=p,vAutos[[n]]=vAutos[[n]]-1,vAutos[[n]]]],{n,nCar}];
 (*Wenn Auto steht ist p um q erh\[ODoubleDot]ht*)
 
 (*R4: Fahren um vAutos Zellen*)
-xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,1,nCar}];
+xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,nCar}];
 
 (*VDR: beim Anfahren nur mit einer Wahrscheinlichkeit p+q anfahren -> lieber im Modul festlegen?*)
 
@@ -406,5 +406,209 @@ PlotStyle->RandomChoice[{Red,Orange,Yellow,LightGreen,LightBlue,Blue,Purple,Pink
 vdrNaSch[70,20,5,0.15,0.1]
 
 
-(* ::Code:: *)
-(**)
+(*Modell zwei Fahrspuren*)
+twolanesNaSch[nCells_,tMax_,vMax_,p_]:=Module[
+(*nCells ist L\[ADoubleDot]nge beider Spuren, nCar Anzahl aller Autos f\[UDoubleDot]r das Histogramm von v *)
+(*F\[UDoubleDot]r Fundamentalplots eine nCells!=0mod5 eingeben, f\[UDoubleDot]r Histogramme nCells=0mod5*)
+
+(*lokale Variablen*)
+{xAutos,xAutos1,xAutos2,vAutos1,vAutos2,dAutos1,dAutos2,viAutos,viAutos1,viAutos2,diAutos,diAutos1,diAutos2,nCar,density,density1,density2,
+fluss,addfluss,savefluss,savefluss1,savefluss2,savexAutos1,savexAutos2,m1,m2,l1,l2,vMittel,dVar1,dVar2,i},
+
+(*Erzeugen einelementige Liste mit Gesamtdichte und Fluss f\[UDoubleDot]r jede Anzahl an Autos*) 
+density=Table[Nothing,{n,1}];
+fluss=Table[Nothing,{n,1}];
+
+(*NaSch-Modell*)
+
+(*Schleife f\[UDoubleDot]r ansteigende Dichte/Anzahlen an Autos*)
+For[nCar=1,nCar<=nCells,nCar++,
+
+(*Autos haben Position x und Geschwindigkeit v zum vorderen Auto*)
+(*Erstellen Liste xAutos mit doppelter L\[ADoubleDot]nge als Stra\[SZ]e*)
+xAutos=Sort[RandomSample[Range[2 nCells],nCar]];
+(*xAutos1=Sort[RandomSample[Range[nCells],nCar]];
+xAutos2=Sort[RandomSample[Range[nCells],nCar]];*)
+(*Aufteilen Liste in zwei Spuren, 1 rechts, 2 links*)
+xAutos1=Select[xAutos,#<=nCells &];
+(*Positionen der linken Spur setzen in Bereich von 0 bis nCells*)
+xAutos2=Drop[Table[xAutos[[n]]-nCells,{n,nCar}],Length[xAutos1]]; (*Problem beim Zugriff auf leere Liste xAutos -> ChatGPT fragen*)
+(*Geschwindigkeiten f\[UDoubleDot]r alle Autos getrennt auf den Spuren*)
+vAutos1=RandomInteger[{0,vMax},Length[xAutos1]];
+vAutos2=RandomInteger[{0,vMax},Length[xAutos2]];
+
+(*Listen zum Speichern von der mittleren v, der Varianz von d und der Dichte der jeweiligen Spur \[UDoubleDot]ber t*)
+vMittel=Table[Nothing,{n,1}];
+dVar1=Table[Nothing,{n,1}];
+dVar2=Table[Nothing,{n,1}];
+density1=Table[Nothing,{n,1}];
+density2=Table[Nothing,{n,1}];
+
+(*Liste zum Speichern von xAutos aus dem vorherigen Zeitschritt*)
+savexAutos1=xAutos1;
+savexAutos2=xAutos2;
+(*Index zum \[CapitalUDoubleDot]berpr\[UDoubleDot]fen der Positionen, startet von der \[UDoubleDot]berpr\[UDoubleDot]ften Zelle nCells*)(*addfluss als Durchfluss von Position nCells zu 1 aufsummiert, savefluss f\[UDoubleDot]r jeden Zeitschritt*)
+addfluss=0;
+m1=Length[xAutos1];
+m2=Length[xAutos2];
+
+Clear[savefluss1];
+Clear[savefluss2];
+savefluss1=Table[Nothing,{n,1}];
+savefluss2=Table[Nothing,{n,1}];
+l1=Length[xAutos1];
+l2=Length[xAutos2];
+
+(*Verkehrsregeln aus NaSch-Modell implementieren*)
+{
+ {For[i=0,i<=tMax,i++, 
+  
+  (*Freie Zellen d vor dem Auto bis zum vorderen*)
+  (*Rechte Spur*)
+  dAutos1=Table[If[xAutos1[[n]]<Max[xAutos1],xAutos1[[n+1]]-xAutos1[[n]]-1,nCells-xAutos1[[n]]+Min[xAutos1]-1],{n,Length[xAutos1]-1}]; 
+  AppendTo[dAutos1,If[xAutos1[[nCar]]<Max[xAutos1],xAutos1[[1]]-xAutos1[[Length[xAutos1]]]-1,nCells-xAutos1[[Length[xAutos1]]]+Min[xAutos1]-1]];
+  (*Linke Spur*)
+  dAutos2=Table[If[xAutos2[[n]]<Max[xAutos2],xAutos2[[n+1]]-xAutos2[[n]]-1,nCells-xAutos2[[n]]+Min[xAutos2]-1],{n,Length[xAutos2]-1}]; 
+  AppendTo[dAutos2,If[xAutos2[[nCar]]<Max[xAutos2],xAutos2[[1]]-xAutos2[[Length[xAutos2]]]-1,nCells-xAutos2[[Length[xAutos2]]]+Min[xAutos2]-1]];
+  
+  (*R1: Beschleunigen, falls vMax noch nicht erreicht*)
+  (*Rechte Spur*)
+  vAutos1=Table[Min[vAutos1[[n]]+1,vMax],{n,Length[xAutos1]}];
+  (*Linke Spur*)
+  vAutos2=Table[Min[vAutos2[[n]]+1,vMax],{n,Length[xAutos2]}];
+  
+  (*R2: Abbremsen, falls v gr\[ODoubleDot]\[SZ]er als Abstand d*)
+  (*Rechte Spur*)
+  vAutos1=Table[Min[dAutos1[[n]],vAutos1[[n]]],{n,Length[xAutos1]}];
+  (*Linke Spur*) 
+  vAutos2=Table[Min[dAutos2[[n]],vAutos2[[n]]],{n,Length[xAutos2]}];
+  
+  (*R3: Tr\[ODoubleDot]deln mit Wahrscheinlichkeit p*)
+  (*Rechte Spur*)
+  vAutos1=Table[If[RandomReal[{0,1}]<=p,vAutos1[[n]]=Max[vAutos1[[n]]-1,0],vAutos1[[n]]],{n,Length[xAutos1]}]; 
+  (*Linke Spur*)
+  vAutos2=Table[If[RandomReal[{0,1}]<=p,vAutos2[[n]]=Max[vAutos2[[n]]-1,0],vAutos2[[n]]],{n,Length[xAutos2]}]; 
+  
+  (*R4: Fahren um vAutos Zellen*)
+  (*Rechte Spur*)
+  xAutos1=Table[If[xAutos1[[n]]+vAutos1[[n]]<=nCells,xAutos1[[n]]=xAutos1[[n]]+vAutos1[[n]],xAutos1[[n]]=xAutos1[[n]]+vAutos1[[n]]-nCells],{n,Length[xAutos1]}];
+  (*Linke Spur*)
+  xAutos2=Table[If[xAutos2[[n]]+vAutos2[[n]]<=nCells,xAutos2[[n]]=xAutos2[[n]]+vAutos2[[n]],xAutos2[[n]]=xAutos2[[n]]+vAutos2[[n]]-nCells],{n,Length[xAutos2]}];
+  
+  (*Verkehrsfluss durch letzte Zelle auf rechter Spur -> Anzahl Autos durch Zelle pro Zeitschritt*)
+  If[m1==0,m1=Length[xAutos1],m1=m1];
+  If[xAutos1[[m1]]<savexAutos1[[m1]],
+  addfluss=addfluss+1;
+  m1=m1-1;,
+  addfluss=addfluss;
+  ]
+  Clear[savexAutos1];
+  savexAutos1=xAutos1;
+  
+  (*Verkehrsfluss durch letzte Zelle auf linker Spur -> Anzahl Autos durch Zelle pro Zeitschritt*)
+  If[m2==0,m2=Length[xAutos2],m2=m2];
+  If[xAutos2[[m2]]<savexAutos2[[m2]],
+  addfluss=addfluss+1;
+  m2=m2-1;,
+  addfluss=addfluss;
+  ];
+  Clear[savexAutos2];
+  savexAutos2=xAutos2;
+  
+  (*Gibt mittlere v, Varianz von d, Fluss und die jeweiligen Dichten der Spuren \[UDoubleDot]ber t f\[UDoubleDot]r 4 Gesamtdichten aus*)
+  If[MemberQ[Table[n/5 nCells,{n,4}],nCar],
+  
+  (*mittlere Geschwindigkeit aller Autos*)
+  AppendTo[vMittel,N[Mean[Join[vAutos1,vAutos2]],6]];
+  (*Varianz des Abstands der jeweiligen Spur*)
+  AppendTo[dVar1,N[Variance[dAutos1],6]];
+  AppendTo[dVar2,N[Variance[dAutos2],6]]; 
+  
+  (*Fluss durch letzte Zelle rechter Spur*);
+  If[l1==0,l1=Length[xAutos1],l1=l1];
+  If[xAutos1[[l1]]<savexAutos1[[l1]],
+  AppendTo[savefluss1,1];
+  l1=l1-1;,
+  AppendTo[savefluss1,0];
+  ];
+  
+  (*Fluss durch letzte Zelle linker Spur*);
+  If[l2==0,l2=Length[xAutos2],l2=l2];
+  If[xAutos2[[l2]]<savexAutos2[[l2]],
+  AppendTo[savefluss2,1];
+  l2=l2-1;,
+  AppendTo[savefluss2,0];
+  ];
+  (*Zusammenz\[ADoubleDot]hlen des Flusses der beiden Spuren*)
+  Clear[savefluss];
+  savefluss=Table[savefluss1[[n]]+savefluss2[[n]],{n,tMax}];
+  
+  (*Dichten der jeweiligen Spuren \[UDoubleDot]ber t*)
+  AppendTo[density1,Length[xAutos1]/nCells];
+  AppendTo[density2,Length[xAutos2]/nCells];
+  
+  (*Plotten vMittel, dVar und savefluss*)
+  ResourceFunction["PlotGrid"][{
+  {ListPlot[vMittel,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,"mittlere Geschwindigkeit" OverBar[v]}]},
+  {ListPlot[dVar1,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,"Varianz des Abstands d auf rechter Spur"}]},
+  {ListPlot[dVar2,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,"Varianz des Abstands d auf linker Spur"}]},
+  {ListPlot[savefluss,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,"Fluss pro Zeitschritt"}]},
+  {ListPlot[density1,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,"Dichte der rechten Spur"}]},
+  {ListPlot[density2,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,"Dichte der linken Spur"}]}
+  },
+  ImageSize->Large,FrameLabel->{"Zeit t",None}
+  ];
+  ];
+  ];, \[Placeholder]}
+}
+(*Gibt Histogramme von v und d bei tMax f\[UDoubleDot]r 4 Dichten aus*)
+If[MemberQ[Table[n/5 nCells,{n,4}],nCar],
+(*Histogramme v und d*)
+(*Listen Autos mit Geschwindigkeiten v=0,1,2,3,4,5*)
+Clear[viAutos1];
+Clear[viAutos2];
+viAutos1=Table[Select[Table[vAutos1[[n]],{n,Length[xAutos1]}],#==i &],{i,0,5}];
+viAutos2=Table[Select[Table[vAutos2[[n]],{n,Length[xAutos2]}],#==i &],{i,0,5}];
+viAutos=Join[viAutos1,viAutos2];
+
+(*Listen Abst\[ADoubleDot]nde d=0,1,...,nCar*)
+Clear[diAutos1];
+Clear[diAutos2];
+diAutos1=Select[Table[Select[Table[dAutos1[[n]],{n,Length[xAutos1]}],#==i &],{i,0,nCells-nCar-1}],UnsameQ[#, {}] &]; 
+diAutos2=Select[Table[Select[Table[dAutos2[[n]],{n,Length[xAutos2]}],#==i &],{i,0,nCells-nCar-1}],UnsameQ[#, {}] &];
+diAutos=Join[diAutos1,diAutos2];
+
+Histogram[viAutos,{1},AxesLabel->{v,"Anzahl Autos mit" Indexed[v,"i"] "f\[UDoubleDot]r die Dichte" nCar/nCells},ColorFunction->"Pastel",ImageSize->Medium]
+Histogram[diAutos,{1},AxesLabel->{d,"Anzahl Autos mit" Indexed[d,"i"] "f\[UDoubleDot]r die Dichte" nCar/nCells},ColorFunction->"Pastel",ImageSize->Medium]
+];
+(*Dichte \[UDoubleDot]ber die gesamte Stra\[SZ]e*)
+AppendTo[density,nCar/nCells];
+
+(*Verkehrsfluss f\[UDoubleDot]r Dichte nCar/nCells*)
+AppendTo[fluss,addfluss];
+];
+(*Fehlend: Dichte getrennt f\[UDoubleDot]r Spuren \[UDoubleDot]ber t*)
+(*Fundamentalplot mit addfluss*)
+(*ListPlot[Thread[{density,fluss/tMax}],ImageSize->Medium,Frame->True,FrameLabel->{"Dichte \[Rho]","Zeitliches Mittel des Flusses \[UDoubleDot]ber letzte Zelle"},
+PlotStyle->RandomChoice[{Red,Orange,Yellow,LightGreen,LightBlue,Blue,Purple,Pink}]] (*Punkte hell f\[UDoubleDot]r dunklen Hintergrund in sp\[ADoubleDot]terem Notebook*)*)
+]
+
+
+twolanesNaSch[20,10,5,0.15]
+(*list={};
+list1=Table[list[[n]],{n,0,0}];
+If[list1[[1]]==0,Print[0],Print[1],Print[2]]*)
+(*ListDensityPlot f\[UDoubleDot]r Dichteplot der Zellenbesetzung! MovingAverage f\[UDoubleDot]r manuelles Einstellen der zu mittelnden Zellen*)
+(*Plot auf Variable a ablegen, dann Print[a]*)
+
+
+For[nCar=1,nCar<=20,nCar++,
+xAutos=Sort[RandomSample[Range[2 20],nCar]];
+xAutos1=Select[xAutos,#<=20 &];
+xAutos2=Drop[Table[xAutos[[n]]-20,{n,nCar}],Length[xAutos1]];
+vAutos1=RandomInteger[{0,5},Length[xAutos1]];
+vAutos2=RandomInteger[{0,5},Length[xAutos2]];
+]
+
+
+
