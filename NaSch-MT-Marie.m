@@ -172,7 +172,7 @@ Histogram[diAutos,{1},AxesLabel->{d,Anzahl Autos mit Indexed[d,"i"]},ColorFuncti
 ]
 
 
-vdhisto[300,300,15,5,0.3]
+vdhisto[100,300,15,5,0.3]
 
 
 (*Berechnung mittlere v \[UDoubleDot]ber t, Varianz des mittleren Abstands und des Verkehrsflusses \[UDoubleDot]ber t*)
@@ -412,17 +412,17 @@ twolanesNaSch[nCells_,tMax_,vMax_,p_]:=Module[
 (*F\[UDoubleDot]r Fundamentalplots eine nCells!=0mod5 eingeben, f\[UDoubleDot]r Histogramme nCells=0mod5*)
 
 (*lokale Variablen*)
-{xAutos,xAutos1,xAutos2,vAutos1,vAutos2,dAutos1,dAutos2,viAutos,viAutos1,viAutos2,diAutos,diAutos1,diAutos2,nCar,density,density1,density2,
+{xAutos,xAutos1,xAutos2,vAutos1,vAutos2,dAutos1,dAutos2,viAutos,viAutos1,viAutos2,vhisto,diAutos,diAutos1,diAutos2,dhisto,nCar,density,density1,density2,
 fluss,addfluss,savefluss,savefluss1,savefluss2,savexAutos1,savexAutos2,m1,m2,l1,l2,vMittel,dVar1,dVar2,i},
 
-(*Erzeugen einelementige Liste mit Gesamtdichte und Fluss f\[UDoubleDot]r jede Anzahl an Autos*) 
-density=Table[Nothing,{n,1}];
-fluss=Table[Nothing,{n,1}];
+(*Erzeugen einelementige Liste mit Gesamtdichte und Fluss f\[UDoubleDot]r nCar=0, f\[UDoubleDot]r jedes nCar werden Werte hinzugef\[UDoubleDot]gt*) 
+density={0};
+fluss={0};
 
 (*NaSch-Modell*)
 
 (*Schleife f\[UDoubleDot]r ansteigende Dichte/Anzahlen an Autos*)
-For[nCar=1,nCar<=nCells,nCar++,
+For[nCar=1,nCar<=nCells,nCar++, 
 
 (*Autos haben Position x und Geschwindigkeit v zum vorderen Auto*)
 (*Erstellen Liste xAutos mit doppelter L\[ADoubleDot]nge als Stra\[SZ]e*)
@@ -432,7 +432,7 @@ xAutos2=Sort[RandomSample[Range[nCells],nCar]];*)
 (*Aufteilen Liste in zwei Spuren, 1 rechts, 2 links*)
 xAutos1=Select[xAutos,#<=nCells &];
 (*Positionen der linken Spur setzen in Bereich von 0 bis nCells*)
-If[UnsameQ[xAutos1,{}],xAutos2=Drop[Table[xAutos[[n]]-nCells,{n,nCar}],Length[xAutos1]],xAutos2=xAutos]; (*Problem beim Zugriff auf Liste xAutos -> Table Befehl nicht richtig?*)
+If[UnsameQ[xAutos1,{}],xAutos2=Drop[Table[xAutos[[n]]-nCells,{n,nCar}],Length[xAutos1]],xAutos2=xAutos];
 (*Geschwindigkeiten f\[UDoubleDot]r alle Autos getrennt auf den Spuren*)
 vAutos1=RandomInteger[{0,vMax},Length[xAutos1]];
 vAutos2=RandomInteger[{0,vMax},Length[xAutos2]];
@@ -452,7 +452,8 @@ addfluss=0;
 m1=Length[xAutos1];
 m2=Length[xAutos2];
 
-
+(*Print[xAutos1];
+Print[xAutos2];*);
 savefluss1=Table[Nothing,{n,1}];
 savefluss2=Table[Nothing,{n,1}];
 l1=Length[xAutos1];
@@ -461,11 +462,11 @@ l2=Length[xAutos2];
 (*Verkehrsregeln aus NaSch-Modell implementieren*)
 For[i=0,i<=tMax,i++, 
 (*Rechte Spur*)
-If[Length[xAutos1]>0 && Length[savexAutos1]>0,
+If[Length[xAutos1]>0 && Length[savexAutos1]>0, (*Bei Spurenwechsel muss geupdatet werden, auch wenn savexAutos leer ist*)
   ((*Freie Zellen d vor dem Auto bis zum vorderen*)
   If[Length[xAutos1]>1,
   (dAutos1=Table[If[xAutos1[[n]]<Max[xAutos1],xAutos1[[n+1]]-xAutos1[[n]]-1,nCells-xAutos1[[n]]+Min[xAutos1]-1],{n,Length[xAutos1]-1}];
-  AppendTo[dAutos1,If[xAutos1[[nCar]]<Max[xAutos1],xAutos1[[1]]-xAutos1[[Length[xAutos1]]]-1,nCells-xAutos1[[Length[xAutos1]]]+Min[xAutos1]-1]];),
+  AppendTo[dAutos1,If[xAutos1[[Length[xAutos1]]]<Max[xAutos1],xAutos1[[1]]-xAutos1[[Length[xAutos1]]]-1,nCells-xAutos1[[Length[xAutos1]]]+Min[xAutos1]-1]];),
   dAutos1={nCells-1};
   ]; 
   
@@ -493,9 +494,11 @@ If[Length[xAutos1]>0 && Length[savexAutos1]>0,
   
   (*Gibt mittlere v, Varianz von d, Fluss und Dichte der Spur \[UDoubleDot]ber t f\[UDoubleDot]r 4 Gesamtdichten aus*)
   If[MemberQ[Table[n/5 nCells,{n,4}],nCar],
-  
   (*Varianz des Abstands*)
-  AppendTo[dVar1,N[Variance[dAutos1],6]];
+  If[Length[xAutos1]>1,
+  AppendTo[dVar1,N[Variance[dAutos1],6]];,
+  AppendTo[dVar1,0];
+  ];
   
   (*Fluss durch letzte Zelle rechter Spur*)
   If[l1==0,l1=Length[xAutos1],l1=l1];
@@ -519,7 +522,7 @@ If[Length[xAutos1]>0 && Length[savexAutos1]>0,
   ((*Freie Zellen d vor dem Auto bis zum vorderen*)
   If[Length[xAutos2]>1,
   (dAutos2=Table[If[xAutos2[[n]]<Max[xAutos2],xAutos2[[n+1]]-xAutos2[[n]]-1,nCells-xAutos2[[n]]+Min[xAutos2]-1],{n,Length[xAutos2]-1}]; 
-  AppendTo[dAutos2,If[xAutos2[[nCar]]<Max[xAutos2],xAutos2[[1]]-xAutos2[[Length[xAutos2]]]-1,nCells-xAutos2[[Length[xAutos2]]]+Min[xAutos2]-1]];),
+  AppendTo[dAutos2,If[xAutos2[[Length[xAutos2]]]<Max[xAutos2],xAutos2[[1]]-xAutos2[[Length[xAutos2]]]-1,nCells-xAutos2[[Length[xAutos2]]]+Min[xAutos2]-1]];),
   dAutos2={nCells-1};
   ];
   
@@ -548,7 +551,10 @@ If[Length[xAutos1]>0 && Length[savexAutos1]>0,
   (*Gibt mittlere v, Varianz von d, Fluss und Dichte der Spur \[UDoubleDot]ber t f\[UDoubleDot]r 4 Gesamtdichten aus*)
   If[MemberQ[Table[n/5 nCells,{n,4}],nCar],
   (*Varianz des Abstands*)
-  AppendTo[dVar2,N[Variance[dAutos2],6]]; 
+  If[Length[xAutos2]>1,
+  AppendTo[dVar2,N[Variance[dAutos2],6]];,
+  AppendTo[dVar2,0];
+  ]; 
   
   (*Fluss durch letzte Zelle*)
   If[l2==0,l2=Length[xAutos2],l2=l2];
@@ -564,29 +570,31 @@ If[Length[xAutos1]>0 && Length[savexAutos1]>0,
   ),
   (addfluss=addfluss;
   AppendTo[savefluss2,0];
-  AppendTo[density2,0]
+  AppendTo[density2,0];
   )
   ];
-  
-  (*Zusammenz\[ADoubleDot]hlen des Flusses der beiden Spuren*)
-  savefluss=Table[savefluss1[[n]]+savefluss2[[n]],{n,tMax}];
   
   (*Mittlere Geschwindigkeit aller Autos*)
   AppendTo[vMittel,N[Mean[Select[Join[vAutos1,vAutos2],UnsameQ[#, {}]&]],6]];
   
-  (*Plotten vMittel, dVar und savefluss*)
+  (*Plotten vMittel, dVar und savefluss
   ResourceFunction["PlotGrid"][{
   {ListPlot[vMittel,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,"mittlere Geschwindigkeit" OverBar[v]}]},
   {ListPlot[dVar1,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,"Varianz des Abstands d auf rechter Spur"}]},
   {ListPlot[dVar2,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,"Varianz des Abstands d auf linker Spur"}]},
-  {ListPlot[savefluss,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,"Fluss pro Zeitschritt"}]},
   {ListPlot[density1,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,"Dichte der rechten Spur"}]},
   {ListPlot[density2,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{None,"Dichte der linken Spur"}]}
   },
   ImageSize->Large,FrameLabel->{"Zeit t",None}
-  ]; 
+  ]; *)
   ];
-
+  
+(*Zusammenz\[ADoubleDot]hlen des Flusses der beiden Spuren f\[UDoubleDot]r 4 Dichten*)
+ If[MemberQ[Table[n/5 nCells,{n,4}],nCar],
+ savefluss=Table[savefluss1[[n]]+savefluss2[[n]],{n,tMax+1}];
+ ListPlot[savefluss,ImageSize->Automatic,ColorFunction->"Rainbow",Frame->True,FrameLabel->{"Zeit t","Fluss pro Zeitschritt"}]
+ ];
+ 
 (*Gibt Histogramme von v und d bei tMax f\[UDoubleDot]r 4 Dichten aus*)
 (*Keine Histogramme ausgegeben, falls kein Auto auf der Spur*)
 If[Length[xAutos1]>0 && MemberQ[Table[n/5 nCells,{n,4}],nCar],
@@ -615,11 +623,14 @@ diAutos2=Select[Table[Select[Table[dAutos2[[n]],{n,Length[xAutos2]}],#==i &],{i,
 diAutos2={};)
 ];
 
+If[MemberQ[Table[n/5 nCells,{n,4}],nCar],
 viAutos=Select[Join[viAutos1,viAutos2],UnsameQ[#, {}]&];
 diAutos=Select[Join[diAutos1,diAutos2],UnsameQ[#, {}]&];
-
-Histogram[viAutos,{1},AxesLabel->{v,"Anzahl Autos mit" Indexed[v,"i"] "f\[UDoubleDot]r die Dichte" nCar/nCells},ColorFunction->"Pastel",ImageSize->Medium]
-Histogram[diAutos,{1},AxesLabel->{d,"Anzahl Autos mit" Indexed[d,"i"] "f\[UDoubleDot]r die Dichte" nCar/nCells},ColorFunction->"Pastel",ImageSize->Medium]
+vhisto=Histogram[viAutos,{1},AxesLabel->{v,"Anzahl Autos mit" Indexed[v,"i"] "f\[UDoubleDot]r die Dichte"},ColorFunction->"Pastel",ImageSize->Medium];
+dhisto=Histogram[diAutos,{1},AxesLabel->{d,"Anzahl Autos mit" Indexed[d,"i"] "f\[UDoubleDot]r die Dichte"},ColorFunction->"Pastel",ImageSize->Medium];
+Print[Show[vhisto]];
+Print[Show[dhisto]];
+]
 
 (*Dichte \[UDoubleDot]ber die gesamte Stra\[SZ]e*)
 AppendTo[density,nCar/nCells];
@@ -628,7 +639,7 @@ AppendTo[density,nCar/nCells];
 AppendTo[fluss,addfluss];
 Clear[savefluss1];
 Clear[savefluss2];
-];
+]
 (*Fehlend: Dichte getrennt f\[UDoubleDot]r Spuren \[UDoubleDot]ber t*)
 (*Fundamentalplot mit addfluss*)
 (*ListPlot[Thread[{density,fluss/tMax}],ImageSize->Medium,Frame->True,FrameLabel->{"Dichte \[Rho]","Zeitliches Mittel des Flusses \[UDoubleDot]ber letzte Zelle"},
@@ -637,11 +648,9 @@ PlotStyle->RandomChoice[{Red,Orange,Yellow,LightGreen,LightBlue,Blue,Purple,Pink
 
 
 twolanesNaSch[20,10,5,0.15]
-(*list={};
-list1=Table[list[[n]],{n,0,0}];
-If[list1[[1]]==0,Print[0],Print[1],Print[2]]*)
-(*ListDensityPlot f\[UDoubleDot]r Dichteplot der Zellenbesetzung! MovingAverage f\[UDoubleDot]r manuelles Einstellen der zu mittelnden Zellen*)
-(*Plot auf Variable a ablegen, dann Print[a]*)
 
 
 
+nCar=4;
+nCells=6;
+vhisto=Histogram[{1,1,1,1,1,2,2,2,2,3,3,4,5,5,5,5},{1},AxesLabel->{v,"Anzahl Autos mit" Indexed[v,"i"] "f\[UDoubleDot]r die Dichte" nCar/nCells},ColorFunction->"Pastel",ImageSize->Medium]
