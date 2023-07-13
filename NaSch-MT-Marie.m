@@ -371,7 +371,7 @@ vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,nCar}];
 (*R2: Abbremsen, falls v gr\[ODoubleDot]\[SZ]er als Abstand d*)
 vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,nCar}]; 
 
-(*R3: Tr\[ODoubleDot]deln mit Wahrscheinlichkeit p*)
+(*R3: Tr\[ODoubleDot]deln mit Wahrscheinlichkeit p*)(*Randomization, q=p0-p, p+q wahrscheinlichkeit dass sie tr\[ODoubleDot]deln falls die vorher v=0 hatten, p=wahrsch. v>0*)
 vAutos=Table[If[vAutos[[n]]==0,If[RandomReal[{0,1}]<=p+q,vAutos[[n]],vAutos[[n]]],If[RandomReal[{0,1}]<=p,vAutos[[n]]=vAutos[[n]]-1,vAutos[[n]]]],{n,nCar}];
 (*Wenn Auto steht ist p um q erh\[ODoubleDot]ht*)
 
@@ -642,6 +642,4 @@ list1=Table[list[[n]],{n,0,0}];
 If[list1[[1]]==0,Print[0],Print[1],Print[2]]*)
 (*ListDensityPlot f\[UDoubleDot]r Dichteplot der Zellenbesetzung! MovingAverage f\[UDoubleDot]r manuelles Einstellen der zu mittelnden Zellen*)
 (*Plot auf Variable a ablegen, dann Print[a]*)
-
-
 
