@@ -626,8 +626,9 @@ diAutos2={};)
 If[MemberQ[Table[n/5 nCells,{n,4}],nCar],
 viAutos=Select[Join[viAutos1,viAutos2],UnsameQ[#, {}]&];
 diAutos=Select[Join[diAutos1,diAutos2],UnsameQ[#, {}]&];
-vhisto=Histogram[viAutos,{1},AxesLabel->{v,"Anzahl Autos mit" Indexed[v,"i"] "f\[UDoubleDot]r die Dichte"},ColorFunction->"Pastel",ImageSize->Medium];
-dhisto=Histogram[diAutos,{1},AxesLabel->{d,"Anzahl Autos mit" Indexed[d,"i"] "f\[UDoubleDot]r die Dichte"},ColorFunction->"Pastel",ImageSize->Medium];
+Print["viAutos =",viAutos,", diAutos= ",diAutos];
+vhisto=Histogram[Flatten[viAutos],{1},AxesLabel->{v,"Anzahl Autos mit" Indexed[v,"i"] "f\[UDoubleDot]r die Dichte"},ColorFunction->"Pastel",ImageSize->Medium];
+dhisto=Histogram[Flatten[diAutos],{1},AxesLabel->{d,"Anzahl Autos mit" Indexed[d,"i"] "f\[UDoubleDot]r die Dichte"},ColorFunction->"Pastel",ImageSize->Medium];
 Print[Show[vhisto]];
 Print[Show[dhisto]];
 ]
