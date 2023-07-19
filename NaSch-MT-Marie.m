@@ -519,8 +519,8 @@ For[i=0,i<=tMax,i++,
   AppendTo[wechselzu2,index2+1];
   (*Verschiebung s durch entfernte Autos aus xAutos1*)
   s=Length[Select[wechselvon1,#<=k &]];
-  Remove[xAutos1,k-s];
-  Remove[vAutos1,k-s];
+  Delete[xAutos1,k-s];
+  Delete[vAutos1,k-s];
   If[k-s<=m1,m1=m1-1];
   If[k-s<=l1,l1=l1-1];
   (*Positionen herausgenommener Elemente aus xAutos1 und vAutos1*)
@@ -546,8 +546,8 @@ For[i=0,i<=tMax,i++,
   AppendTo[wechselzu2,index2+1];
   (*Verschiebung s durch entfernte Autos aus xAutos1*)
   s=Length[Select[wechselvon1,#<=k &]];
-  Remove[xAutos1,k-s];
-  Remove[vAutos1,k-s];
+  Delete[xAutos1,k-s];
+  Delete[vAutos1,k-s];
   If[k-s<=m1,m1=m1-1];
   If[k-s<=l1,l1=l1-1];
   (*Positionen k entfernter Elemente aus xAutos1 und vAutos1, verwendet zum Vergleich mit savexAutos1 und savevAutos1,
@@ -565,8 +565,8 @@ For[i=0,i<=tMax,i++,
   AppendTo[wechselzu2,1];
   (*Verschiebung s durch entfernte Autos aus xAutos1*)
   s=Length[Select[wechselvon1,#<=k &]];
-  Remove[xAutos1,k-s];
-  Remove[vAutos1,k-s];
+  Delete[xAutos1,k-s];
+  Delete[vAutos1,k-s];
   If[k-s<=m1,m1=m1-1];
   If[k-s<=l1,l1=l1-1];
   (*Positionen entfernter Elemente aus xAutos1 und vAutos1*)
@@ -590,7 +590,7 @@ For[i=0,i<=tMax,i++,
   (*Falls Auto mit kleinerer Position existiert*)
   (If[UnsameQ[Select[savexAutos1,#<savexAutos2[[h]] &],{}],
   (*Betrachteter Index: n\[ADoubleDot]chstes Auto mit kleinerer Position*)
-  index1=Flatten[Position[Max[Select[savexAutos1,#<savexAutos2[[h]] &]]]];
+  index1=Flatten[Position[savexAutos1,Max[Select[savexAutos1,#<savexAutos2[[h]] &]]]];
   (*Falls Spurwechsel ohne Auffahrunfall von hinten und Weiterfahren mit v-1 ohne Anfahren des vorderen Autos m\[ODoubleDot]glich*)
   (If[savexAutos1[[index1]]+savevAutos1[[index1]]<savexAutos2[[h]]+savevAutos2[[h]]-1<savexAutos1[[index1]]+dAutos1[[index1]]+1,
   ((*Verschiebung o von index1 durch hinzugef\[UDoubleDot]gte Autos zu xAutos1 minus entfernte Autos aus xAutos1*)
@@ -603,8 +603,8 @@ For[i=0,i<=tMax,i++,
   AppendTo[wechselzu1,index1+1];
   (*Verschiebung j von h durch hinzugef\[UDoubleDot]gte Autos zu xAutos2 minus entfernte Autos aus xAutos2*)
   j=Length[Select[wechselzu2,#<=h &]]-Length[Select[wechselvon2,#<=h &]];
-  Remove[xAutos2,h+j];
-  Remove[vAutos2,h+j]; 
+  Delete[xAutos2,h+j];
+  Delete[vAutos2,h+j]; 
   If[h+j<=m2,m2=m2-1];
   If[h+j<=l2,l2=l2-1];
   AppendTo[wechselvon2,h];),
@@ -628,8 +628,8 @@ For[i=0,i<=tMax,i++,
   AppendTo[wechselzu1,index1+1];
   (*Verschiebung j von h durch hinzugef\[UDoubleDot]gte Autos zu xAutos2 minus entfernte Autos aus xAutos2*)
   j=Length[Select[wechselzu2,#<=h &]]-Length[Select[wechselvon2,#<=h &]];
-  Remove[xAutos2,h+j];
-  Remove[vAutos2,h+j];
+  Delete[xAutos2,h+j];
+  Delete[vAutos2,h+j];
   If[h+j<=m2,m2=m2-1];
   If[h+j<=l2,l2=l2-1];
   (*Positionen herausgenommener Elemente aus xAutos2 und vAutos2*)
@@ -646,8 +646,8 @@ For[i=0,i<=tMax,i++,
   AppendTo[wechselzu1,1];
   (*Verschiebung o von h durch hinzugef\[UDoubleDot]gte Autos zu xAutos2 minus entfernte Autos aus xAutos2*)
   o=Length[Select[wechselzu2,#<=h &]]-Length[Select[wechselvon2,#<=h &]];
-  Remove[xAutos2,h+o];
-  Remove[vAutos2,h+o];
+  Delete[xAutos2,h+o];
+  Delete[vAutos2,h+o];
   If[h+o<=m2,m2=m2-1];
   If[h+o<=l2,l2=l2-1];
   (*Positionen entfernter Elemente aus xAutos2 und vAutos2*)
