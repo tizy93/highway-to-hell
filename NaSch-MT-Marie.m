@@ -19,6 +19,17 @@
 (*diese Staus bilden sich aus dem nichts. Der Nagel-Schreckenberg-Modell bilden sich simuliert und analysiert dieses Ph\[ADoubleDot]nomen, unfallfrei.*)
 (*Das Nasch-Modell stellt die Stra\[SZ]e als ein Vektor in einzelne Abschnitte geteilt, die entweder von einem Auto besetzt oder leer sind. Die Autos haben maximal eine Geschwindigkeit die gleichgro\[SZ] ist als die Zahl von leeren Teilen, die vor sich finden. Die Zellen werden eine l\[ADoubleDot]nge von 7,5 m damit wird jede Auto eine Geschwindigkeit von 135 Km/h um das Modell an die Realit\[ADoubleDot]t anzupassen *)
 (**)
+
+
+(* ::Chapter:: *)
+(*Nasch-Modell*)
+
+
+(* ::Text:: *)
+(*Es wird das Haupt Modell geschrieben und Geplottet.*)
+(*Es besteht aus einer For-Schleife, indem die Schritte f\[UDoubleDot]r jede runde von i=0 bis zum i=tMax entfaltet werden.*)
+(*Diese sind die Beschleunigung von jedem Auto um 1. Falls der Abstand von dem n\[ADoubleDot]chsten Auto kleiner als die neue Geschwindigkeit ist, wird abgebremst. Au\[SZ]erdem kann ein Auto mit einer Tr\[ODoubleDot]delwahrscheinlichkeit p noch zus\[ADoubleDot]tzlich abbremsen. Die Autos Fahren in einem ring.*)
+(*Diese Model wird wieder in jede Modul geschrieben um den unterschiedlichen \[CapitalUDoubleDot]bungen schreiben und plotten zu k\[ODoubleDot]nnen *)
 (**)
 
 
@@ -73,10 +84,16 @@ Print[density];
 ]
 
 
-NaSch[10,30,5,5,0.3]
+NaSch[100,300,100,5,0.15]
+
+
+(* ::Chapter:: *)
+(*Dichteplot*)
 
 
 (* ::Text:: *)
+(*Der N\[ADoubleDot]chste Modul entspricht den dichteplot. es werden eine bestimmte Anzahl an Zelle beobachtet, sonst w\[UDoubleDot]rde die dichte immer gleich. Die dichte entspricht der Anzahl an Autos die an dem entsprechenden Runde in diesen Intervall Zellen gefahren sind.*)
+(**)
 (*Im Dichteplot wird die Anzahl der Autos N \[UDoubleDot]ber einer Anzahl avCells Zellen berechnet und \[UDoubleDot]ber der Zeit t dargestellt.*)
 
 
@@ -137,6 +154,19 @@ densityplot[100,300,100,5,0.15,100]
 
 
 
+(* ::Text:: *)
+(*Diskussion*)
+
+
+(* ::Chapter:: *)
+(*Histogramme*)
+
+
+(* ::Text:: *)
+(*In diesem Modul werden erzeugt die Histogramme der Geschwindigkeit und den Abstand f\[UDoubleDot]r einen Zeitpunkt tMax. *)
+(**)
+
+
 (*Histogramme Geschwindigkeiten und Abstand f\[UDoubleDot]r einen Zeitpunkt*)
 vdhisto[nCar_,nCells_,tMax_,vMax_,p_]:=Module[
 (*tMax ist betrachteter Zeitpunkt*)
@@ -187,6 +217,24 @@ Show[dhisto]
 
 
 vdhisto[100,300,100,5,0.15]
+
+
+(* ::Text:: *)
+(*Aus dem erster Histogramm kann beobachtet werden, dass je gr\[ODoubleDot]\[SZ]er der Abstand zwischen den Autos ist, desto weniger Autos mit diesem Abstand vorhanden sind wegen den Anzahl an Zellen und die Verteilung des Autos.*)
+(*Der zweiter Histogramm zeigt dass mehrere Autos die Geschwindigkeit 1 oder 0 besitzen und  weniger sind die Autos mit h\[ODoubleDot]here Geschwindigkeit, weil weniger Autos h\[ODoubleDot]here Abst\[ADoubleDot]nde als 1 oder 0 besitzen.*)
+(**)
+
+
+(* ::Chapter:: *)
+(*Meanvarfluss*)
+
+
+(* ::Text:: *)
+(*Hier werden: die mittlere Geschwindigkeit der Autos, *)
+(*die Varianz des Abstands zwischen jedes Auto, und den Verkehrsfluss, f\[UDoubleDot]r jede runde berechnet.*)
+(*Die Verkehrsfl\[UDoubleDot]sse ist die Anzahl an Auto die durch die letzte Zelle fahren, pro Zeitschritt kann es mit einer Spur also entweder 0 oder 1 sein.*)
+(*Anschlie\[SZ]end werden die Grafiken von Geschwindigkeit und die Varianz geplottet und dann die korreliert. Der Fluss wird auch dargestellt.*)
+(**)
 
 
 (*Berechnung mittlere v \[UDoubleDot]ber t, Varianz des mittleren Abstands und des Verkehrsflusses \[UDoubleDot]ber t*)
@@ -269,6 +317,25 @@ PlotLabel->"Korrelation Varianz des Abstands und mittlere Gewschindigkeit"]
 Meanvarfluss[100,300,100,5,0.15]
 
 
+(* ::Text:: *)
+(*Die Grafiken von Mittlere Geschwindigkeit, Varianz des Abstands und Der Fluss pro Zeitschritt sind \[UDoubleDot]ber die Zeit dargestellt. Die Zeigen dass die mittlere Geschwindigkeit und die Varianz des abstand haben gr\[ODoubleDot]\[SZ]ere Sprunge. Die Geschwindigkeit variiert zwischen 1 und 2 das bedeutet, dass wann die niedriger werden sich Staus bilden.*)
+(*Die Spr\[UDoubleDot]nge von Varianz sind schon h\[ODoubleDot]her als die von der Geschwindigkeit, von 2 bis ungef\[ADoubleDot]hr 10. Die meisten punkte befinden sich um die Varianz herum die in der Mitte zwischen der niedrigste und die h\[ODoubleDot]chste Varianz liegt.*)
+(*Die Grafik der Fluss zeigt, wie das nur 1 oder 0 sein kann weil nur eine spur simuliert wird. Da ein Auto nur bis zu einer Zelle vor dem n\[ADoubleDot]chsten fahren kann (R2: Abbremsen, falls v gr\[ODoubleDot]\[SZ]er als d), kann eine Zelle in einer Runde nur von einem Auto durchquert werden.*)
+(*Aus der Korrelation der Geschwindigkeit und der Varianz des Abstands ist zu sehen, wie die mittlere Geschwindigkeit linear abnimmt mit der Zunahme von der Varianz des Abstands.*)
+(**)
+
+
+(* ::Chapter:: *)
+(*Fundamentalplot*)
+
+
+(* ::Text:: *)
+(*Unter fundamental Plot versteht man die Korrelation zwischen Verkehrsfluss \[UDoubleDot]ber die dichte.*)
+(*In diesem Teil wird ein Modul daf\[UDoubleDot]r hergestellt und anschlie\[SZ]end das dargestellt.*)
+(*Nachdem wird es f\[UDoubleDot]r unterschiedliche Tr\[ODoubleDot]delwahrscheinlichkeiten p geschrieben und geplottet.*)
+(**)
+
+
 (*Fundamentalplot*)
 FundamentalD[nCells_,tMax_,vMax_,p_]:=Module[
 (*Fluss wird f\[UDoubleDot]r Dichten 0 bis 1 berechnet*)
@@ -333,20 +400,38 @@ AppendTo[fluss,addfluss];
 ];
 (*Fehlend: f\[UDoubleDot]r verschiedene p -> im Aufruf selbst*)
 (*Fundamentalplot mit addfluss*);
-ListPlot[Thread[{density,fluss/tMax}],ImageSize->Medium,PlotRange->{0,0.75},Frame->True,FrameLabel->{"Dichte \[Rho]","Zeitliches Mittel des Flusses mit p = " <> ToString[p]},
+ListPlot[Thread[{density,fluss/tMax}],ImageSize->Medium,PlotRange->{0,0.9},Frame->True,FrameLabel->{"Dichte \[Rho]","Zeitliches Mittel des Flusses mit p = " <> ToString[p]},
 PlotStyle->RandomChoice[{Red,Orange,Yellow,LightGreen,LightBlue,Blue,Purple,Pink}]] (*Punkte hell f\[UDoubleDot]r dunklen Hintergrund in sp\[ADoubleDot]terem Notebook*)
 ]
 
 
-FundamentalD[100,20,5,0.5]
-(*FundamentalD[100,20,5,0.1]
-FundamentalD[100,20,5,0.15]
-FundamentalD[100,20,5,0.2]
-FundamentalD[100,20,5,0.25]
-FundamentalD[100,20,5,0.3]
-FundamentalD[100,20,5,0.5]
-FundamentalD[100,20,5,0.75]
-FundamentalD[100,20,5,1]*)
+FundamentalD[300,100,5,0]
+FundamentalD[300,100,5,0.1]
+FundamentalD[300,100,5,0.15]
+FundamentalD[300,100,5,0.2]
+FundamentalD[300,100,5,0.25]
+FundamentalD[300,100,5,0.3]
+FundamentalD[300,100,5,0.5]
+FundamentalD[300,100,5,0.75]
+FundamentalD[300,100,5,1]
+
+
+(* ::Text:: *)
+(*Man sieht aus die Fundamentalplots, dass je h\[ODoubleDot]her die Tr\[ODoubleDot]delwarscheinligkeit ist desto h\[ODoubleDot]her ist die Streuung des Flusses und desto geringere ist der Fluss.*)
+(*Die Diagramme zeigen wie die H\[ODoubleDot]he der Peaks beim p=0.1 am h\[ODoubleDot]chsten ist, und zwar fast bis 0.7 und dass beim p= 1 viel geringer wird, also bis ungef\[ADoubleDot]hr 0,012 hoch werden. *)
+(*Mit eine unterschied von \[CapitalDelta]p=0.05 unterscheid sich den peak von 0.5 und mit \[CapitalDelta]p=0.1 wird das unterschied auch beim ungef\[ADoubleDot]hr 0.1*)
+(*Man kann beobachten, dass bis dichte, ungef\[ADoubleDot]hr, 0.125 wird der Fluss linear erh\[ODoubleDot]hen, weil keine Staus noch gibt's und nach diese dichte werden mehrere Staus sich entwickeln und wird damit der Fluss linear abfallen. Der Fluss wird 0 ungef\[ADoubleDot]hr bei dichte=1.*)
+(*Eine Ausnahme bildet sich f\[UDoubleDot]r p=1 wo der Fluss fast sofort abf\[ADoubleDot]llt, also ab eine dichte nah an 0.*)
+(**)
+(**)
+
+
+(* ::Chapter:: *)
+(*VDR*)
+
+
+(* ::Text:: *)
+(*In dieses Modul wird der Nasch- Modell in VDR geschrieben, und zwar mit einer Geschwindigkeit das abh\[ADoubleDot]ngig von der Tr\[ODoubleDot]delwahrscheinlichkeit variiert, also wenn die Geschwindigkeit null ist wird die Tr\[ODoubleDot]delwahrscheinligkeit um q h\[ODoubleDot]her als sonst.*)
 
 
 (*Fundamentalplots des Velocity-Dependent-Randomization Modells*)
@@ -418,7 +503,20 @@ PlotStyle->RandomChoice[{Red,Orange,Yellow,LightGreen,LightBlue,Blue,Purple,Pink
 ]
 
 
-vdrNaSch[70,20,5,0.15,0.1]
+vdrNaSch[300,100,5,0.15,0.2]
+
+
+(* ::Text:: *)
+(*Diskussion)*)
+
+
+(* ::Chapter:: *)
+(*Zwei Spuren*)
+
+
+(* ::Text:: *)
+(*Als letzte wird den Model auf zwei Spuren angepasst also wird wieder den nasch Model von Anfang genutzt nicht auf VDR basiert.*)
+(**)
 
 
 (*Modell zwei Fahrspuren*)
@@ -880,10 +978,23 @@ PlotStyle->RandomChoice[{Red,Orange,Yellow,LightGreen,LightBlue,Blue,Purple,Pink
 ]
 
 
-twolanesNaSch[20,10,5,0.15]
+twolanesNaSch[300,100,5,0.15]
 
 
 
 a=1;
 a=2;
 a
+
+
+(* ::Text:: *)
+(*(Diskussion)*)
+
+
+(* ::Chapter:: *)
+(*Weiterf\[UDoubleDot]hrende Frage*)
+
+
+(* ::Text:: *)
+(*Dieses Modul zeigt wie sich eine Schlange, aufgrund einer Ampel und einen Blitzer, bilden kann. *)
+(**)
