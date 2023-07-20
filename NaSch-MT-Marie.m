@@ -14,6 +14,14 @@
 (**)
 
 
+(* ::Text:: *)
+(*Die H\[ADoubleDot]lfte der deutsch verlieren jedes Jahr, im Durchschnitt, 40 Stunde im stau.*)
+(*diese Staus bilden sich aus dem nichts. Der Nagel-Schreckenberg-Modell bilden sich simuliert und analysiert dieses Ph\[ADoubleDot]nomen, unfallfrei.*)
+(*Das Nasch-Modell stellt die Stra\[SZ]e als ein Vektor in einzelne Abschnitte geteilt, die entweder von einem Auto besetzt oder leer sind. Die Autos haben maximal eine Geschwindigkeit die gleichgro\[SZ] ist als die Zahl von leeren Teilen, die vor sich finden. Die Zellen werden eine l\[ADoubleDot]nge von 7,5 m damit wird jede Auto eine Geschwindigkeit von 135 Km/h um das Modell an die Realit\[ADoubleDot]t anzupassen *)
+(**)
+(**)
+
+
 (*Modul Nagel-Schreckenberg Modell*)
 NaSch[nCar_,nCells_,tMax_,vMax_,p_]:=Module[
 (*Eingabe Anzahl der Autos nCar, Anzahl der Zellen nCells, Simulationsdauer tMax, 
