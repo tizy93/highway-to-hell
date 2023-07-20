@@ -25,7 +25,7 @@ Maximalgeschwindigkeit vMax und Tr\[ODoubleDot]delwahrscheinlichkeit p mit Funkt
 (*Autos haben Position x und Geschwindigkeit v zum vorderen Auto*)
 xAutos=Sort[RandomSample[Range[nCells],nCar]];
 (*erzeugt zuf\[ADoubleDot]llige (Random) Liste xAutos ohne Wiederholungen (Sample) in aufsteigender Reihenfolge (Sort)*)
-vAutos=RandomInteger[{0,vMax},nCar];
+vAutos=RandomInteger[{1,vMax},nCar];
 (*ordnet jedem Auto eine zuf\[ADoubleDot]llige Geschwindigkeit von 0 bis vMax zu*)
 (*Einzelne Autos sind gekennzeichnet durch Element-Position in der Liste mit Position xAutos[[n]] und Geschwindigkeit vAutos[[n]]*)
 
@@ -60,7 +60,8 @@ Print[vAutos];
 Print[dAutos];
 Print[density];
 *)
-]
+(*Vllt fehlend: graphische Darstellung Stra\[SZ]e?*)
+];
 ]
 
 
@@ -80,7 +81,7 @@ densityplot[nCar_,nCells_,tMax_,vMax_,p_,avCells_]:=Module[
 
 (*Autos haben Position x und Geschwindigkeit v zum vorderen Auto*)
 xAutos=Sort[RandomSample[Range[nCells],nCar]];
-vAutos=RandomInteger[{0,vMax},nCar]; 
+vAutos=RandomInteger[{1,vMax},nCar]; 
 
 (*Erzeugen einelementige Liste mit Dichte*) 
 density=Table[Nothing,{n,1}];
@@ -108,17 +109,12 @@ xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[
 regionCars=DeleteCases[Table[If[xAutos[[n]]<=avCells,xAutos[[n]],],{n,1,nCar}],Null]; (*Nullen mit DeleteCases gel\[ODoubleDot]scht*)
 (*Element zu density-Liste mit Dichte am Zeitpunkt t hinzugef\[UDoubleDot]gt, t entspricht Reihenfolge der Liste*)
 AppendTo[density,Length[regionCars]/avCells];
-(*Ausgabe xAutos*)
-(*
-Print[xAutos]; (*Print kostet viel Rechenzeit*)
-*)
-]
+
+];
 (*Plotten Dichte*)
-Delete[density,1]; (*L\[ODoubleDot]schen erstes Nullelement*)
-(*Print[density];*)
+Print[density];
 ListPlot[density,ImageSize->Medium,ColorFunction->"Rainbow",Frame->True,FrameLabel->{"Zeit t","Dichte \[Rho]"}]
 ]
-
 
 
 densityplot[7,30,15,5,0.3,10]
@@ -136,7 +132,7 @@ vdhisto[nCar_,nCells_,tMax_,vMax_,p_]:=Module[
 
 (*Autos haben Position x und Geschwindigkeit v zum vorderen Auto*)
 xAutos=Sort[RandomSample[Range[nCells],nCar]];
-vAutos=RandomInteger[{0,vMax},nCar];
+vAutos=RandomInteger[{1,vMax},nCar];
 
 (*Verkehrsregeln aus NaSch-Modell implementieren*)
 For[i=0,i<=tMax,i++,
@@ -156,7 +152,7 @@ vAutos=Table[If[RandomReal[{0,1}]<=p,vAutos[[n]]=Max[vAutos[[n]]-1,0],vAutos[[n]
 
 (*R4: Fahren um vAutos Zellen*)
 xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[n]],xAutos[[n]]=xAutos[[n]]+vAutos[[n]]-nCells],{n,nCar}];
-]
+];
 (*Listen Autos mit Geschwindigkeiten v=0,1,2,3,4,5*)
 Clear[viAutos];
 viAutos=Table[Select[Table[vAutos[[n]],{n,1,nCar}],#==i &],{i,0,5}];
@@ -186,7 +182,7 @@ Meanvarfluss[nCar_,nCells_,tMax_,vMax_,p_]:=Module[
 
 (*Autos haben Position x und Geschwindigkeit v zum vorderen Auto*)
 xAutos=Sort[RandomSample[Range[nCells],nCar]];
-vAutos=RandomInteger[{0,vMax},nCar]; 
+vAutos=RandomInteger[{1,vMax},nCar]; 
 
 (*Erzeugen einelementige Liste mit vMittel, dVar und fluss*) 
 Clear[vMittel];
@@ -228,7 +224,7 @@ If[xAutos[[m]]<savexAutos[[m]],
 AppendTo[savefluss,1];
 m=m-1;,
 AppendTo[savefluss,0];
-]
+];
 Clear[savexAutos];
 savexAutos=xAutos;
 
@@ -272,7 +268,7 @@ For[nCar=0,nCar<=nCells,nCar++,
 
 (*Autos haben Position x und Geschwindigkeit v zum vorderen Auto*)
 xAutos=Sort[RandomSample[Range[nCells],nCar]];
-vAutos=RandomInteger[{0,vMax},nCar]; 
+vAutos=RandomInteger[{1,vMax},nCar]; 
 
 (*Liste zum Speichern von xAutos aus dem vorherigen Zeitschritt*)
 savexAutos=xAutos;
@@ -305,17 +301,17 @@ If[xAutos[[m]]<savexAutos[[m]],
 addfluss=addfluss+1;
 m=m-1;,
 addfluss=addfluss;
-]
+];
 Clear[savexAutos];
 savexAutos=xAutos;
-]
+];
 
 (*Dichte \[UDoubleDot]ber die gesamte Stra\[SZ]e*)
 AppendTo[density,nCar/nCells];
 
 (*Verkehrsfluss f\[UDoubleDot]r Dichte nCar/nCells*);
 AppendTo[fluss,addfluss];
-]
+];
 (*Fehlend: f\[UDoubleDot]r verschiedene p -> im Aufruf selbst*)
 (*Fundamentalplot mit addfluss*);
 ListPlot[Thread[{density,fluss/tMax}],ImageSize->Medium,Frame->True,FrameLabel->{"Dichte \[Rho]","Zeitliches Mittel des Flusses \[UDoubleDot]ber letzte Zelle"},
@@ -350,7 +346,7 @@ For[nCar=0,nCar<=nCells,nCar++,
 
 (*Autos haben Position x und Geschwindigkeit v zum vorderen Auto*)
 xAutos=Sort[RandomSample[Range[nCells],nCar]];
-vAutos=RandomInteger[{0,vMax},nCar];
+vAutos=RandomInteger[{1,vMax},nCar];
 
 (*Liste zum Speichern von xAutos aus dem vorherigen Zeitschritt*)
 savexAutos=xAutos;
@@ -409,7 +405,7 @@ vdrNaSch[70,20,5,0.15,0.1]
 (*Modell zwei Fahrspuren*)
 twolanesNaSch[nCells_,tMax_,vMax_,p_]:=Module[
 (*nCells ist L\[ADoubleDot]nge beider Spuren, nCar Anzahl aller Autos f\[UDoubleDot]r das Histogramm von v *)
-(*F\[UDoubleDot]r Fundamentalplots eine nCells!=0mod5 eingeben, f\[UDoubleDot]r Histogramme nCells=0mod5*)
+(*F\[UDoubleDot]r Fundamentalplots eine nCells!=0mod5 eingeben, f\[UDoubleDot]r Histogramme zus\[ADoubleDot]tzlich nCells=0mod5*)
 
 (*lokale Variablen*)
 {xAutos,xAutos1,xAutos2,vAutos1,vAutos2,dAutos1,dAutos2,viAutos,viAutos1,viAutos2,vhisto,diAutos,diAutos1,diAutos2,dhisto,nCar,density,density1,density2,
@@ -435,8 +431,8 @@ xAutos1=Select[xAutos,#<=nCells &];
 (*Positionen der linken Spur setzen in Bereich von 0 bis nCells*)
 If[UnsameQ[xAutos1,{}],xAutos2=Drop[Table[xAutos[[n]]-nCells,{n,nCar}],Length[xAutos1]],xAutos2=xAutos];
 (*Geschwindigkeiten f\[UDoubleDot]r alle Autos getrennt auf den Spuren*)
-vAutos1=RandomInteger[{0,vMax},Length[xAutos1]];
-vAutos2=RandomInteger[{0,vMax},Length[xAutos2]];
+vAutos1=RandomInteger[{1,vMax},Length[xAutos1]];
+vAutos2=RandomInteger[{1,vMax},Length[xAutos2]];
 
 (*Listen zum Speichern von der mittleren v, der Varianz von d und der Dichte der jeweiligen Spur \[UDoubleDot]ber t*)
 vMittel=Table[Nothing,{n,1}];
@@ -777,6 +773,14 @@ For[i=0,i<=tMax,i++,
   savexAutos2=xAutos2;
   Clear[savevAutos2];
   savevAutos2=vAutos2;
+  Clear[savem1];
+  savem1=m1;
+  Clear[savem2];
+  savem2=m2;
+  Clear[savel1];
+  savel1=l1;
+  Clear[savel2];
+  savel2=l2;
   
   (*Dichten der Spur \[UDoubleDot]ber t*)
   (*Rechte Spur*)
