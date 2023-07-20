@@ -103,7 +103,7 @@ NaSch[10,30,5,5,0.3]
 (*Dichteplot \[UDoubleDot]ber Zeit*)
 densityplot[nCar_,nCells_,tMax_,vMax_,p_,avCells_]:=Module[
 (*lokale Variablen*)
-{xAutos,vAutos,dAutos,regionCars,density},
+{xAutos,vAutos,dAutos,regionCars,density,pos\[UDoubleDot]bert,densplot},
 
 (*NaSch-Modell*)
 
@@ -111,8 +111,9 @@ densityplot[nCar_,nCells_,tMax_,vMax_,p_,avCells_]:=Module[
 xAutos=Sort[RandomSample[Range[nCells],nCar]];
 vAutos=RandomInteger[{1,vMax},nCar]; 
 
-(*Erzeugen einelementige Liste mit Dichte*) 
+(*Erzeugen einelementige Liste mit Dichte und Positionen der Autos*) 
 density=Table[Nothing,{n,1}];
+pos\[UDoubleDot]bert=Table[Nothing,{n,1}];
 
 (*Verkehrsregeln aus NaSch-Modell implementieren*)
 For[i=0,i<=tMax,i++, 
@@ -137,11 +138,15 @@ xAutos=Table[If[xAutos[[n]]+vAutos[[n]]<=nCells,xAutos[[n]]=xAutos[[n]]+vAutos[[
 regionCars=DeleteCases[Table[If[xAutos[[n]]<=avCells,xAutos[[n]],],{n,1,nCar}],Null]; (*Nullen mit DeleteCases gel\[ODoubleDot]scht*)
 (*Element zu density-Liste mit Dichte am Zeitpunkt t hinzugef\[UDoubleDot]gt, t entspricht Reihenfolge der Liste*)
 AppendTo[density,Length[regionCars]/avCells];
+(*Positionen der Autos f\[UDoubleDot]r den DensityPlot abspeichern*)
+AppendTo[pos\[UDoubleDot]bert,xAutos];
 
 ];
-(*Plotten Dichte*)
+(*Plotten Dichte
 Print[density];
-ListPlot[density,ImageSize->Medium,ColorFunction->"Rainbow",Frame->True,FrameLabel->{"Zeit t","Dichte \[Rho]"}]
+ListPlot[density,ImageSize->Medium,ColorFunction->"Rainbow",Frame->True,FrameLabel->{"Zeit t","Dichte \[Rho]"}]*);
+densplot=ArrayPlot[pos\[UDoubleDot]bert,AxesLabel->{"Zeit t","Zellen der Stra\[SZ]e"}];
+Return[densplot];
 ]
 
 
@@ -979,12 +984,6 @@ a
 (* ::Text:: *)
 (*Dieses Modul zeigt wie sich eine Schlange, aufgrund einer Ampel und einen Blitzer, bilden kann. *)
 (**)
-
-
-
-
-
-
 
 
 (* ::Text:: *)
