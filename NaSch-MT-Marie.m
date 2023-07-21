@@ -398,7 +398,6 @@ AppendTo[density,nCar/nCells];
 (*Verkehrsfluss f\[UDoubleDot]r Dichte nCar/nCells*);
 AppendTo[fluss,addfluss];
 ];
-(*Fehlend: f\[UDoubleDot]r verschiedene p -> im Aufruf selbst*)
 (*Fundamentalplot mit addfluss*);
 ListPlot[Thread[{density,fluss/tMax}],ImageSize->Medium,PlotRange->{0,0.9},Frame->True,FrameLabel->{"Dichte \[Rho]","Zeitliches Mittel des Flusses mit p = " <> ToString[p]},
 PlotStyle->RandomChoice[{Red,Orange,Yellow,LightGreen,LightBlue,Blue,Purple,Pink}]] (*Punkte hell f\[UDoubleDot]r dunklen Hintergrund in sp\[ADoubleDot]terem Notebook*)
@@ -439,7 +438,17 @@ vdrNaSch[nCells_,tMax_,vMax_,p_,q_]:=Module[
 (*q ist zus\[ADoubleDot]tzliche Wahrscheinlichkeit zum Tr\[ODoubleDot]deln beim Anfahren*)
 
 (*lokale Variablen*)
-{xAutos,vAutos,dAutos,nCar,density,addfluss,savexAutos,m,fluss},
+{xAutos,vAutos,dAutos,nCar,density,addfluss,savexAutos,m,fluss,posxAutos,newpos\[UDoubleDot]bert,pos\[UDoubleDot]bert,densplot,histoplot,fundplot,rhodensplot,dichte,viAutos,diAutos,vhisto,dhisto},
+
+(*Leere Liste f\[UDoubleDot]r Plots*)
+densplot=Table[Nothing,{n,1}];
+histoplot=Table[Nothing,{n,1}];
+vhisto=Table[Nothing,{n,1}];
+dhisto=Table[Nothing,{n,1}];
+
+(*ListDensityPlot und Histogramme f\[UDoubleDot]r 4 Dichten + Dichte aus vorherigen Modulaufrufen*)
+rhodensplot=Table[n/5 nCells,{n,4}];
+AppendTo[rhodensplot,100];
 
 (*Erzeugen einelementige Liste mit Dichte, Fluss, und Fluss f\[UDoubleDot]r jede Anzahl an Autos*) 
 density=Table[Nothing,{n,1}];
@@ -447,6 +456,11 @@ fluss=Table[Nothing,{n,1}];
 
 (*Schleife f\[UDoubleDot]r ansteigende Dichte/Anzahlen an Autos*)
 For[nCar=0,nCar<=nCells,nCar++,
+
+(*Leere Listen f\[UDoubleDot]r ListDensityPlot*)
+posxAutos=Table[Nothing,{n,1}];
+newpos\[UDoubleDot]bert=Table[Nothing,{n,1}];
+pos\[UDoubleDot]bert=Table[Nothing,{n,1}];
 
 (*Autos haben Position x und Geschwindigkeit v zum vorderen Auto*)
 xAutos=Sort[RandomSample[Range[nCells],nCar]];
@@ -489,17 +503,45 @@ addfluss=addfluss;
 ];
 Clear[savexAutos];
 savexAutos=xAutos;
+
+(*ListDensityPlot*)
+If[MemberQ[rhodensplot,nCar],
+posxAutos=Flatten[Table[If[Select[xAutos,#==n &]=={},0,1],{n,1,nCells}]];
+(*Positionen der Autos f\[UDoubleDot]r den DensityPlot abspeichern*)
+AppendTo[pos\[UDoubleDot]bert,posxAutos]
+];
 ];
 (*Dichte \[UDoubleDot]ber die gesamte Stra\[SZ]e*)
 AppendTo[density,nCar/nCells];
 
-(*Verkehrsfluss f\[UDoubleDot]r Dichte nCar/nCells*);
-AppendTo[fluss,addfluss];
+If[MemberQ[rhodensplot,nCar],
+(*Anpassen pos\[UDoubleDot]bert sodass t in positive x-Richtung l\[ADoubleDot]uft statt in positiver y-Richtung*)
+newpos\[UDoubleDot]bert=Table[Table[pos\[UDoubleDot]bert[[n,l]],{n,tMax}],{l,nCells}];
+Clear[dichte];
+dichte=DecimalForm[nCar/nCells,2];
+AppendTo[densplot,ListDensityPlot[newpos\[UDoubleDot]bert,FrameLabel->{"Zeit t","Zellen der Stra\[SZ]e"},ImageSize->Medium,PlotLabel->"Dichteplot f\[UDoubleDot]r "<>ToString[nCar]<>" Autos / \[Rho] = " dichte]];
+
+(*Listen Autos mit Geschwindigkeiten v=0,1,2,3,4,5*)
+Clear[viAutos];
+viAutos=Table[Select[Table[vAutos[[n]],{n,1,nCar}],#==i &],{i,0,5}];
+
+(*Listen Abst\[ADoubleDot]nde d=0,1,...,nCar*)
+Clear[diAutos];
+diAutos=Select[Table[Select[Table[dAutos[[n]],{n,1,nCar}],#==i &],{i,0,nCells-nCar-1}],UnsameQ[#, {}] &]; (*Maximaler Abstand ist nCells-nCar-1, falls alle anderen Autos d=0 voneinander*)
+(*L\[ODoubleDot]schen der Abst\[ADoubleDot]nde, die nicht vorkommen*)
+
+AppendTo[vhisto,Histogram[viAutos,{1},AxesLabel->{v,Anzahl Autos mit Indexed[v,"i"]},ColorFunction->"Pastel",ImageSize->Medium,PlotLabel->"Histogramm von v f\[UDoubleDot]r \[Rho] = "<>ToString[dichte]<>"/ Car = "<>ToString[nCar]]];
+AppendTo[dhisto,Histogram[diAutos,{1},AxesLabel->{d,Anzahl Autos mit Indexed[d,"i"]},ColorFunction->"Pastel",ImageSize->Medium,PlotLabel->"Histogramm von d f\[UDoubleDot]r \[Rho] = "<>ToString[dichte]<>"/ Car = "<>ToString[nCar]]];
+(*Histogramm z\[ADoubleDot]hlt, wie oft eine Zahl in einer Liste und den Sublisten darin vorkommt*)
 ];
-(*Fehlend: f\[UDoubleDot]r verschiedene p -> im Aufruf selbst*)
+
+(*Verkehrsfluss f\[UDoubleDot]r Dichte nCar/nCells*);
+AppendTo[fluss,addfluss]; (*"Histogramm von v f\[UDoubleDot]r \[Rho] = "dichte<>"/ Car = "<>ToString[nCar]*)
+];
 (*Fundamentalplot mit addfluss*);
-ListPlot[Thread[{density,fluss/tMax}],ImageSize->Medium,Frame->True,FrameLabel->{"Dichte \[Rho]","Zeitliches Mittel des Flusses \[UDoubleDot]ber letzte Zelle"},
-PlotStyle->RandomChoice[{Red,Orange,Yellow,LightGreen,LightBlue,Blue,Purple,Pink}]] (*Hell f\[UDoubleDot]r dunklen Hintergrund in sp\[ADoubleDot]terem Notebook*)
+fundplot=ListPlot[Thread[{density,fluss/tMax}],ImageSize->Medium,Frame->True,FrameLabel->{"Dichte \[Rho]","Zeitliches Mittel des Flusses"},PlotLabel->"Fundamentalplot mit p= "<>ToString[p],
+PlotStyle->RandomChoice[{Red,Orange,Yellow,LightGreen,LightBlue,Blue,Purple,Pink}]]; (*Hell f\[UDoubleDot]r dunklen Hintergrund in sp\[ADoubleDot]terem Notebook*)
+Return[{densplot,fundplot,vhisto,dhisto}]
 ]
 
 
