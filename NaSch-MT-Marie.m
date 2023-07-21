@@ -15,9 +15,11 @@
 
 
 (* ::Text:: *)
-(*Die H\[ADoubleDot]lfte der deutsch verlieren jedes Jahr, im Durchschnitt, 40 Stunde im stau.*)
-(*diese Staus bilden sich aus dem nichts. Der Nagel-Schreckenberg-Modell bilden sich simuliert und analysiert dieses Ph\[ADoubleDot]nomen, unfallfrei.*)
-(*Das Nasch-Modell stellt die Stra\[SZ]e als ein Vektor in einzelne Abschnitte geteilt, die entweder von einem Auto besetzt oder leer sind. Die Autos haben maximal eine Geschwindigkeit die gleichgro\[SZ] ist als die Zahl von leeren Teilen, die vor sich finden. Die Zellen werden eine l\[ADoubleDot]nge von 7,5 m damit wird jede Auto eine Geschwindigkeit von 135 Km/h um das Modell an die Realit\[ADoubleDot]t anzupassen *)
+(*Die H\[ADoubleDot]lfte der Deutschen verbringen jedes Jahr im Durchschnitt 40 Stunden im Stau. *)
+(**)
+(*Oft bilden sich diese Staus aus dem Nichts. Das Nagel-Schreckenberg-Modell simuliert und analysiert den Verkehr unfallfrei und liefert u.A. eine Erkl\[ADoubleDot]rung f\[UDoubleDot]r dieses Ph\[ADoubleDot]nomen. *)
+(**)
+(*Das NaSch-Modell teilt die Stra\[SZ]e in einzelne Abschnitte, die entweder von einem Auto besetzt oder leer sind. Diese Zellen haben eine L\[ADoubleDot]nge von 7,5 m. Auch die Zeitschritte in Sekunden, oft "Runden" genannt, und Geschwindigkeiten sind diskret, mit Geschwindigkeiten von \[UDoubleDot]blicherweise 0 bis 5. Hierbei ist v=0 ein stehendes Auto, v=1 bedeutet eine Zelle pro Zeitschritt, also 7,5m/s bzw. 27km/h. Somit ist die Maximalgeschwindigkeit v=5 umgerechnet 135km/h. *)
 (**)
 
 
@@ -434,24 +436,31 @@ FundamentalD[300,100,5,1]
 
 
 (*Fundamentalplots des Velocity-Dependent-Randomization Modells*)
-vdrNaSch[nCells_,tMax_,vMax_,p_,q_]:=Module[
+vdrNaSch[nCells_,tMax_,vMax_,q_]:=Module[
 (*q ist zus\[ADoubleDot]tzliche Wahrscheinlichkeit zum Tr\[ODoubleDot]deln beim Anfahren*)
 
 (*lokale Variablen*)
-{xAutos,vAutos,dAutos,nCar,density,addfluss,savexAutos,m,fluss,posxAutos,newpos\[UDoubleDot]bert,pos\[UDoubleDot]bert,densplot,histoplot,fundplot,rhodensplot,dichte,viAutos,diAutos,vhisto,dhisto},
+{xAutos,vAutos,dAutos,nCar,p,a,density,addfluss,savexAutos,m,fluss,posxAutos,newpos\[UDoubleDot]bert,pos\[UDoubleDot]bert,densplot,histoplot,fundplot,rhodensplot,dichte,viAutos,diAutos,vhisto,dhisto},
 
 (*Leere Liste f\[UDoubleDot]r Plots*)
 densplot=Table[Nothing,{n,1}];
 histoplot=Table[Nothing,{n,1}];
 vhisto=Table[Nothing,{n,1}];
 dhisto=Table[Nothing,{n,1}];
+fundplot=Table[Nothing,{n,1}];
 
-(*ListDensityPlot und Histogramme f\[UDoubleDot]r 4 Dichten + Dichte aus vorherigen Modulaufrufen*)
-rhodensplot=Table[n/5 nCells,{n,4}];
-AppendTo[rhodensplot,100];
+(*Histogramme f\[UDoubleDot]r 3 Dichten*)
+rhodensplot={60,100,200};
 
+(*Tr\[ODoubleDot]delwahrscheinlichkeiten pi*)
+p={0.15,0.3};
+a=1;
+(*Ausf\[UDoubleDot]hren f\[UDoubleDot]r Tr\[ODoubleDot]delwahrscheinlichkeiten p*)
+Do[
 (*Erzeugen einelementige Liste mit Dichte, Fluss, und Fluss f\[UDoubleDot]r jede Anzahl an Autos*) 
+Clear[density];
 density=Table[Nothing,{n,1}];
+Clear[fluss];
 fluss=Table[Nothing,{n,1}];
 
 (*Schleife f\[UDoubleDot]r ansteigende Dichte/Anzahlen an Autos*)
@@ -486,7 +495,7 @@ vAutos=Table[Min[vAutos[[n]]+1,vMax],{n,nCar}];
 vAutos=Table[Min[dAutos[[n]],vAutos[[n]]],{n,nCar}]; 
 
 (*R3: Tr\[ODoubleDot]deln mit Wahrscheinlichkeit p*)(*Randomization, q=p0-p, p+q wahrscheinlichkeit dass sie tr\[ODoubleDot]deln falls die vorher v=0 hatten, p=wahrsch. v>0*)
-vAutos=Table[If[vAutos[[n]]==0,If[RandomReal[{0,1}]<=p+q,vAutos[[n]],vAutos[[n]]],If[RandomReal[{0,1}]<=p,vAutos[[n]]=vAutos[[n]]-1,vAutos[[n]]]],{n,nCar}];
+vAutos=Table[If[vAutos[[n]]==0,If[RandomReal[{0,1}]<=p[[a]]+q,vAutos[[n]],vAutos[[n]]],If[RandomReal[{0,1}]<=p,vAutos[[n]]=vAutos[[n]]-1,vAutos[[n]]]],{n,nCar}];
 (*Wenn Auto steht ist p um q erh\[ODoubleDot]ht*)
 
 (*R4: Fahren um vAutos Zellen*)
@@ -514,13 +523,19 @@ AppendTo[pos\[UDoubleDot]bert,posxAutos]
 (*Dichte \[UDoubleDot]ber die gesamte Stra\[SZ]e*)
 AppendTo[density,nCar/nCells];
 
-If[MemberQ[rhodensplot,nCar],
+(*ListDensityPlot f\[UDoubleDot]r 100 Autos*)
+If[nCar==100,
 (*Anpassen pos\[UDoubleDot]bert sodass t in positive x-Richtung l\[ADoubleDot]uft statt in positiver y-Richtung*)
 newpos\[UDoubleDot]bert=Table[Table[pos\[UDoubleDot]bert[[n,l]],{n,tMax}],{l,nCells}];
 Clear[dichte];
 dichte=DecimalForm[nCar/nCells,2];
-AppendTo[densplot,ListDensityPlot[newpos\[UDoubleDot]bert,FrameLabel->{"Zeit t","Zellen der Stra\[SZ]e"},ImageSize->Medium,PlotLabel->"Dichteplot f\[UDoubleDot]r "<>ToString[nCar]<>" Autos / \[Rho] = " dichte]];
+(*
+AppendTo[densplot,ListDensityPlot[newpos\[UDoubleDot]bert,FrameLabel->{"Zeit t","Zellen der Stra\[SZ]e"},ImageSize->Medium,PlotLabel->"Dichteplot f\[UDoubleDot]r "<>ToString[nCar]<>", p = "<>ToString[p]<>" und q = "<>ToString[q]]];
+*)
+];
 
+(*Histogramme f\[UDoubleDot]r 60, 100 und 200 Autos*)
+If[MemberQ[rhodensplot,nCar],
 (*Listen Autos mit Geschwindigkeiten v=0,1,2,3,4,5*)
 Clear[viAutos];
 viAutos=Table[Select[Table[vAutos[[n]],{n,1,nCar}],#==i &],{i,0,5}];
@@ -530,22 +545,27 @@ Clear[diAutos];
 diAutos=Select[Table[Select[Table[dAutos[[n]],{n,1,nCar}],#==i &],{i,0,nCells-nCar-1}],UnsameQ[#, {}] &]; (*Maximaler Abstand ist nCells-nCar-1, falls alle anderen Autos d=0 voneinander*)
 (*L\[ODoubleDot]schen der Abst\[ADoubleDot]nde, die nicht vorkommen*)
 
-AppendTo[vhisto,Histogram[viAutos,{1},AxesLabel->{v,Anzahl Autos mit Indexed[v,"i"]},ColorFunction->"Pastel",ImageSize->Medium,PlotLabel->"Histogramm von v f\[UDoubleDot]r "<>ToString[nCar]<>" Autos / \[Rho] = " dichte]];
-AppendTo[dhisto,Histogram[diAutos,{1},AxesLabel->{d,Anzahl Autos mit Indexed[d,"i"]},ColorFunction->"Pastel",ImageSize->Medium,PlotLabel->"Histogramm von d f\[UDoubleDot]r "<>ToString[nCar]<>" Autos / \[Rho] = " dichte]];
-(*Histogramm z\[ADoubleDot]hlt, wie oft eine Zahl in einer Liste und den Sublisten darin vorkommt*)
+(*AppendTo[vhisto,Histogram[viAutos,{1},AxesLabel->{v,Anzahl Autos mit Indexed[v,"i"]},ColorFunction->"Pastel",ImageSize->Medium,PlotLabel->"Histogramm von v f\[UDoubleDot]r "<>ToString[nCar]<>", p = "<>ToString[p]<>" und q = "<>ToString[q]]];
+AppendTo[dhisto,Histogram[diAutos,{1},AxesLabel->{d,Anzahl Autos mit Indexed[d,"i"]},ColorFunction->"Pastel",ImageSize->Medium,PlotLabel->"Histogramm von d f\[UDoubleDot]r "<>ToString[nCar]<>", p = "<>ToString[p]<>" und q = "<>ToString[q]]];
+Histogramm z\[ADoubleDot]hlt, wie oft eine Zahl in einer Liste und den Sublisten darin vorkommt*)
 ];
 
 (*Verkehrsfluss f\[UDoubleDot]r Dichte nCar/nCells*);
-AppendTo[fluss,addfluss]; (*"Histogramm von v f\[UDoubleDot]r \[Rho] = "dichte<>"/ Car = "<>ToString[nCar]*)
+AppendTo[fluss,addfluss]; 
 ];
-(*Fundamentalplot mit addfluss*);
-fundplot=ListPlot[Thread[{density,fluss/tMax}],ImageSize->Medium,Frame->True,FrameLabel->{"Dichte \[Rho]","Zeitliches Mittel des Flusses"},PlotLabel->"Fundamentalplot mit p= "<>ToString[p],
-PlotStyle->RandomChoice[{Red,Orange,Yellow,LightGreen,LightBlue,Blue,Purple,Pink}]]; (*Hell f\[UDoubleDot]r dunklen Hintergrund in sp\[ADoubleDot]terem Notebook*)
-Return[{densplot,fundplot,vhisto,dhisto}]
+(*Fundamentalplot mit addfluss
+AppendTo[fundplot,ListPlot[Thread[{density,fluss/tMax}],ImageSize->Medium,Frame->True,FrameLabel->{"Dichte \[Rho]","Zeitliches Mittel des Flusses"},PlotLabel->"Fundamentalplot mit p= "<>ToString[p]<>" und q = "<>ToString[q],
+PlotStyle->RandomChoice[{Red,Orange,Yellow,LightGreen,LightBlue,Blue,Purple,Pink}]]]; Hell f\[UDoubleDot]r dunklen Hintergrund in sp\[ADoubleDot]terem Notebook*)
+
+(*Variable a hochz\[ADoubleDot]hlen f\[UDoubleDot]r zweite p*)
+a=a+1;
+,2];
+(*Return[densplot(*,fundplot,vhisto,dhisto*)]*)
+Return[histoplot]
 ]
 
 
-vdrNaSch[300,100,5,0.15,0.2]
+vdrNaSch[300,50,5,0.2]
 
 
 (* ::Text:: *)
