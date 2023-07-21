@@ -210,15 +210,17 @@ Clear[diAutos];
 diAutos=Select[Table[Select[Table[dAutos[[n]],{n,1,nCar}],#==i &],{i,0,nCells-nCar-1}],UnsameQ[#, {}] &]; (*Maximaler Abstand ist nCells-nCar-1, falls alle anderen Autos d=0 voneinander*)
 (*L\[ODoubleDot]schen der Abst\[ADoubleDot]nde, die nicht vorkommen*)
 
-vhisto=Histogram[viAutos,{1},AxesLabel->{v,Anzahl Autos mit Indexed[v,"i"]},ColorFunction->"Pastel",ImageSize->Medium,PlotLabel->"Histogramm der Geschwindigkeiten"];
-dhisto=Histogram[diAutos,{1},AxesLabel->{d,Anzahl Autos mit Indexed[d,"i"]},ColorFunction->"Pastel",ImageSize->Medium,PlotLabel->"Histogramm der Abst\[ADoubleDot]nde"];
+vhisto=Histogram[viAutos,{1},AxesLabel->{v,Anzahl Autos mit Indexed[v,"i"]},ColorFunction->"Pastel",ImageSize->Medium,PlotLabel->"Histogramm von v mit "<>ToString[nCar]<>" Autos"];
+dhisto=Histogram[diAutos,{1},AxesLabel->{d,Anzahl Autos mit Indexed[d,"i"]},ColorFunction->"Pastel",ImageSize->Medium,PlotLabel->"Histogramm von d mit "<>ToString[nCar]<>" Autos"];
 (*Histogramm z\[ADoubleDot]hlt, wie oft eine Zahl in einer Liste und den Sublisten darin vorkommt*)
 Show[vhisto]
 Show[dhisto]
 ]
 
 
+vdhisto[60,300,100,5,0.15]
 vdhisto[100,300,100,5,0.15]
+vdhisto[200,300,100,5,0.15]
 
 
 (* ::Text:: *)
