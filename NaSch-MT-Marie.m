@@ -530,8 +530,8 @@ Clear[diAutos];
 diAutos=Select[Table[Select[Table[dAutos[[n]],{n,1,nCar}],#==i &],{i,0,nCells-nCar-1}],UnsameQ[#, {}] &]; (*Maximaler Abstand ist nCells-nCar-1, falls alle anderen Autos d=0 voneinander*)
 (*L\[ODoubleDot]schen der Abst\[ADoubleDot]nde, die nicht vorkommen*)
 
-AppendTo[vhisto,Histogram[viAutos,{1},AxesLabel->{v,Anzahl Autos mit Indexed[v,"i"]},ColorFunction->"Pastel",ImageSize->Medium,PlotLabel->"Histogramm von v f\[UDoubleDot]r \[Rho] = "<>ToString[dichte]<>"/ Car = "<>ToString[nCar]]];
-AppendTo[dhisto,Histogram[diAutos,{1},AxesLabel->{d,Anzahl Autos mit Indexed[d,"i"]},ColorFunction->"Pastel",ImageSize->Medium,PlotLabel->"Histogramm von d f\[UDoubleDot]r \[Rho] = "<>ToString[dichte]<>"/ Car = "<>ToString[nCar]]];
+AppendTo[vhisto,Histogram[viAutos,{1},AxesLabel->{v,Anzahl Autos mit Indexed[v,"i"]},ColorFunction->"Pastel",ImageSize->Medium,PlotLabel->"Histogramm von v f\[UDoubleDot]r "<>ToString[nCar]<>" Autos / \[Rho] = " dichte]];
+AppendTo[dhisto,Histogram[diAutos,{1},AxesLabel->{d,Anzahl Autos mit Indexed[d,"i"]},ColorFunction->"Pastel",ImageSize->Medium,PlotLabel->"Histogramm von d f\[UDoubleDot]r "<>ToString[nCar]<>" Autos / \[Rho] = " dichte]];
 (*Histogramm z\[ADoubleDot]hlt, wie oft eine Zahl in einer Liste und den Sublisten darin vorkommt*)
 ];
 
