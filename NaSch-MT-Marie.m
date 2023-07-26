@@ -21,6 +21,8 @@
 (**)
 (*Das NaSch-Modell teilt die Stra\[SZ]e in einzelne Abschnitte, die entweder von einem Auto besetzt oder leer sind. Diese Zellen haben eine L\[ADoubleDot]nge von 7,5 m. Auch die Zeitschritte in Sekunden, oft "Runden" genannt, und Geschwindigkeiten sind diskret, mit Geschwindigkeiten von \[UDoubleDot]blicherweise 0 bis 5. Hierbei ist v=0 ein stehendes Auto, v=1 bedeutet eine Zelle pro Zeitschritt, also 7,5m/s bzw. 27km/h. Somit ist die Maximalgeschwindigkeit v=5 umgerechnet 135km/h. *)
 (**)
+(*F\[UDoubleDot]r eine bessere Lesbarkeit unseres Projekts wird ein Download des ben\[ODoubleDot]tigten Fonts \[UDoubleDot]ber den Link https://www.dafontfree.co/downloads/ac-dc/ empfohlen.*)
+(**)
 
 
 (* ::Chapter:: *)
@@ -182,7 +184,7 @@ Show[listdichteplot]
 
 
 (* ::Text:: *)
-(*Diskussion*)
+(*Das Dichteplot stellt die Stra\[SZ]e \[UDoubleDot]ber die Zeit dar. Auf der y-Achse sind die Zellen der Stra\[SZ]e mit besetzten Zellen als helle Punkte und leere als dunkelblaue Punkte. Die Entwicklung \[UDoubleDot]ber die Zeit ist in positiver x-Richtung aufgetragen. Es l\[ADoubleDot]sst sich beobachten, dass eine Ansammlung von Autos bei t=0 in der Grafik in positiver x-Richtung nach unten wandert, indem Autos aus den vorderen Zellen der Ansammlung losfahren und die hinteren sich stauen bzw neue Autos auf den Stau auffahren.*)
 
 
 (* ::Chapter:: *)
@@ -587,7 +589,12 @@ vdrNaSch[300,100,5,0.2]
 
 
 (* ::Text:: *)
-(*Diskussion)*)
+(*Aus den ersten zwei Histogrammen kann gefolgert werden, dass aufgrund von der geringeren Anzahl an Autos (60) \[UDoubleDot]ber der Anzahl an Zellen (300) die Erh\[ODoubleDot]hung der Tr\[ODoubleDot]delwahrscheinlichkeit q nicht h\[ADoubleDot]ufig vorkommt, weil der Platz zwischen zwei Autos h\[ADoubleDot]ufig h\[ODoubleDot]her ist als dessen Geschwindigkeit. *)
+(*Das passiert weniger bei einer h\[ODoubleDot]heren Anzahl an Fahrzeugen (z.B. 100 \[UDoubleDot]ber 300), weil die Abst\[ADoubleDot]nde geringer sind. Das verursacht eine Erh\[ODoubleDot]hung der Tr\[ODoubleDot]delwahrscheinlichkeit um q, weshalb sich bilden Staus bilden. Eine sehr geringere Menge an Autos haben einen gr\[ODoubleDot]\[SZ]eren Abstand.*)
+(*Bei 200 Autos ist letzteres nicht mehr erkennbar, die Abst\[ADoubleDot]nde sind sehr gering.*)
+(*Aus den n\[ADoubleDot]chsten Histogrammen, mit p erh\[ODoubleDot]ht zu 0.3, l\[ADoubleDot]sst sich beobachten, dass aufgrund der h\[ODoubleDot]heren Tr\[ODoubleDot]delwahrscheinlichkeit viele Autos eine geringere Geschwindigkeit haben im Vergleich zu p=0.15. *)
+(*Aus dem Dichteplot kann beobachtet werden, dass mit einer Wahrscheinlichkeit von p=0.15 die lokale Dichte der Autos mehrmals h\[ODoubleDot]her ist, es bilden sich gr\[ODoubleDot]\[SZ]ere Staus. Mit einer Wahrscheinlichkeit p=0.3 ist die lokale Dichte h\[ADoubleDot]ufig h\[ODoubleDot]her auf der ganzen Stra\[SZ]e, aber die Staus werden k\[UDoubleDot]rzer.*)
+(*Die Fundamentalplots sehen wie die f\[UDoubleDot]r 0.15 und 0.3 aus der Fundamentalplots teil (s. oben) aus. Also wird die zus\[ADoubleDot]tzliche q nicht in der Grafik viel auswirken.*)
 
 
 (* ::Chapter:: *)
