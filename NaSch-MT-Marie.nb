@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[    204874,       4669]
-NotebookOptionsPosition[    202531,       4631]
-NotebookOutlinePosition[    203072,       4650]
-CellTagsIndexPosition[    203029,       4647]
+NotebookDataLength[    204985,       4674]
+NotebookOptionsPosition[    202675,       4637]
+NotebookOutlinePosition[    203182,       4655]
+CellTagsIndexPosition[    203139,       4652]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -24,8 +24,9 @@ Cell[TextData[StyleBox["The highway to hell",
  FontFamily->"Squealer Embossed",
  FontColor->RGBColor[
   0.9921568627450981, 0.10588235294117647`, 0.058823529411764705`]]], "Title",
- CellFrame->{{0, 0}, {0, 
-  0}},ExpressionUUID->"4c5b8c48-ea21-458d-8a47-cd3439a3b576"],
+ CellFrame->{{0, 0}, {0, 0}},
+ FontColor->RGBColor[
+  1., 1., 1.],ExpressionUUID->"4c5b8c48-ea21-458d-8a47-cd3439a3b576"],
 
 Cell[TextData[StyleBox["Menschen machen seltsame Sachen",
  FontFamily->"Squealer",
@@ -43,18 +44,23 @@ Cell[TextData[{
   3.8987683914401827`*^9},ExpressionUUID->"398bd9fe-bf3f-4c9f-a231-\
 c789daaac767"],
 
-Cell[TextData[StyleBox["Die H\[ADoubleDot]lfte der deutsch verlieren jedes \
-Jahr, im Durchschnitt, 40 Stunde im Stau.\ndiese Staus bilden sich aus dem \
-nichts. Der Nagel-Schreckenberg-Modell bilden sich simuliert und analysiert \
-dieses Ph\[ADoubleDot]nomen, unfallfrei.\nDas Nasch-Modell stellt die Stra\
-\[SZ]e als ein Vektor in einzelne Abschnitte geteilt, die entweder von einem \
-Auto besetzt oder leer sind. Die Autos haben maximal eine Geschwindigkeit die \
+Cell[TextData[{
+ StyleBox["Die H\[ADoubleDot]lfte der deutsch verlieren jedes Jahr, im \
+Durchschnitt, 40 Stunde im Stau.\ndiese Staus bilden sich aus dem nichts. Der \
+Nagel-Schreckenberg-Modell bilden sich simuliert und analysiert dieses Ph\
+\[ADoubleDot]nomen, unfallfrei.\nDas Nasch-Modell stellt die Stra\[SZ]e als \
+ein Vektor in einzelne Abschnitte geteilt, die entweder von einem Auto \
+besetzt oder leer sind. Die Autos haben maximal eine Geschwindigkeit die \
 gleichgro\[SZ] ist als die Zahl von leeren Teilen, die vor sich finden. Die \
 Zellen werden eine L\[ADoubleDot]nge von 7,5 m damit wird jede Auto eine \
 Geschwindigkeit von 135 Km/h um das Modell an die Realit\[ADoubleDot]t \
-anzupassen \n",
- FontColor->RGBColor[
-  0.9568627450980393, 0.6470588235294118, 0.06666666666666667]]], "Text",
+anzupassen ",
+  FontColor->RGBColor[
+   0.9568627450980393, 0.6470588235294118, 0.06666666666666667]],
+ StyleBox["\n",
+  FontColor->RGBColor[
+   0.9568627450980393, 0.6470588235294118, 0.06666666666666667]]
+}], "Text",
  CellChangeTimes->{
   3.8987684242440667`*^9, {3.89876852790409*^9, 
    3.8987685321442766`*^9}},ExpressionUUID->"96b5a938-abee-4e7c-b495-\
@@ -4629,9 +4635,8 @@ Cell[BoxData[{
 "41dc66e4-7301-4f8d-94bd-dfee54498448"]
 }, Open  ]]
 },
-WindowSize->{1152., 615.6},
-WindowMargins->{{
-  Automatic, -5.399999999999864}, {-5.399999999999977, Automatic}},
+WindowSize->{574.8, 609.6},
+WindowMargins->{{-4.8, Automatic}, {Automatic, 0}},
 TaggingRules-><|"CodeFormatter" -> <|"ToolbarState" -> False|>|>,
 Magnification:>0.9 Inherited,
 FrontEndVersion->"13.2 for Microsoft Windows (64-bit) (January 30, 2023)",
@@ -4650,26 +4655,26 @@ CellTagsIndex->{}
 (*NotebookFileOutline
 Notebook[{
 Cell[CellGroupData[{
-Cell[580, 22, 268, 5, 86, "Title",ExpressionUUID->"4c5b8c48-ea21-458d-8a47-cd3439a3b576"],
-Cell[851, 29, 239, 4, 46, "Subtitle",ExpressionUUID->"82eccbbc-421a-4762-bb86-ee2ab25c3b60"],
-Cell[1093, 35, 277, 8, 56, "Text",ExpressionUUID->"398bd9fe-bf3f-4c9f-a231-c789daaac767"],
-Cell[1373, 45, 959, 15, 147, "Text",ExpressionUUID->"96b5a938-abee-4e7c-b495-bbbd5c64a2fa"],
-Cell[2335, 62, 12284, 299, 782, "Code",ExpressionUUID->"1c1b3d41-374b-47dd-b054-5979bf093786"],
-Cell[14622, 363, 171, 3, 45, "Code",ExpressionUUID->"cd125677-6eba-4fd1-841d-0d101ef3364e"],
-Cell[14796, 368, 222, 3, 33, "Text",ExpressionUUID->"f57a7ba6-94de-44e7-a11f-1afe39b1e82d"],
-Cell[15021, 373, 11186, 270, 781, "Code",ExpressionUUID->"2eb48919-77a2-4410-810c-6792a06d2ae9"],
-Cell[26210, 645, 427, 12, 62, "Code",ExpressionUUID->"6e1b616f-a3fe-42e4-93a3-f65a9e354de4"],
-Cell[26640, 659, 11691, 292, 731, "Code",ExpressionUUID->"a9a05c6e-aaea-44cf-93da-e5833b7444e7"],
-Cell[38334, 953, 176, 3, 45, "Code",ExpressionUUID->"172d1781-1ca0-4671-b4a8-d7b862fc0f80"],
-Cell[38513, 958, 15454, 375, 1202, "Code",ExpressionUUID->"f3ea62d7-2a4b-4215-8f74-7702256029c8"],
-Cell[53970, 1335, 180, 3, 45, "Code",ExpressionUUID->"def195a3-e01c-49b0-b7ca-c0426981a609"],
-Cell[54153, 1340, 13999, 328, 1089, "Code",ExpressionUUID->"ce296155-e0c4-492a-ba18-3be5abee4e59"],
-Cell[68155, 1670, 1047, 22, 172, "Code",ExpressionUUID->"9af28515-9f15-4872-97f8-ada328d44e70"],
-Cell[69205, 1694, 16060, 373, 1090, "Code",ExpressionUUID->"931ee5d5-1d2f-4c4c-94f3-e782156129dd"],
-Cell[85268, 2069, 177, 3, 45, "Code",ExpressionUUID->"9b7f6e23-5b2e-4532-8666-52c009a3b114"],
-Cell[85448, 2074, 116684, 2541, 7231, "Code",ExpressionUUID->"fc798286-c7dc-44be-8714-ec2da0d50df4"],
-Cell[202135, 4617, 190, 4, 61, "Code",ExpressionUUID->"432a6573-1d6b-45ea-bf7a-38a4489280ad"],
-Cell[202328, 4623, 187, 5, 77, "Code",ExpressionUUID->"41dc66e4-7301-4f8d-94bd-dfee54498448"]
+Cell[580, 22, 302, 6, 86, "Title",ExpressionUUID->"4c5b8c48-ea21-458d-8a47-cd3439a3b576"],
+Cell[885, 30, 239, 4, 46, "Subtitle",ExpressionUUID->"82eccbbc-421a-4762-bb86-ee2ab25c3b60"],
+Cell[1127, 36, 277, 8, 56, "Text",ExpressionUUID->"398bd9fe-bf3f-4c9f-a231-c789daaac767"],
+Cell[1407, 46, 1069, 20, 260, "Text",ExpressionUUID->"96b5a938-abee-4e7c-b495-bbbd5c64a2fa"],
+Cell[2479, 68, 12284, 299, 782, "Code",ExpressionUUID->"1c1b3d41-374b-47dd-b054-5979bf093786"],
+Cell[14766, 369, 171, 3, 45, "Code",ExpressionUUID->"cd125677-6eba-4fd1-841d-0d101ef3364e"],
+Cell[14940, 374, 222, 3, 33, "Text",ExpressionUUID->"f57a7ba6-94de-44e7-a11f-1afe39b1e82d"],
+Cell[15165, 379, 11186, 270, 781, "Code",ExpressionUUID->"2eb48919-77a2-4410-810c-6792a06d2ae9"],
+Cell[26354, 651, 427, 12, 62, "Code",ExpressionUUID->"6e1b616f-a3fe-42e4-93a3-f65a9e354de4"],
+Cell[26784, 665, 11691, 292, 731, "Code",ExpressionUUID->"a9a05c6e-aaea-44cf-93da-e5833b7444e7"],
+Cell[38478, 959, 176, 3, 45, "Code",ExpressionUUID->"172d1781-1ca0-4671-b4a8-d7b862fc0f80"],
+Cell[38657, 964, 15454, 375, 1202, "Code",ExpressionUUID->"f3ea62d7-2a4b-4215-8f74-7702256029c8"],
+Cell[54114, 1341, 180, 3, 45, "Code",ExpressionUUID->"def195a3-e01c-49b0-b7ca-c0426981a609"],
+Cell[54297, 1346, 13999, 328, 1089, "Code",ExpressionUUID->"ce296155-e0c4-492a-ba18-3be5abee4e59"],
+Cell[68299, 1676, 1047, 22, 172, "Code",ExpressionUUID->"9af28515-9f15-4872-97f8-ada328d44e70"],
+Cell[69349, 1700, 16060, 373, 1090, "Code",ExpressionUUID->"931ee5d5-1d2f-4c4c-94f3-e782156129dd"],
+Cell[85412, 2075, 177, 3, 45, "Code",ExpressionUUID->"9b7f6e23-5b2e-4532-8666-52c009a3b114"],
+Cell[85592, 2080, 116684, 2541, 7231, "Code",ExpressionUUID->"fc798286-c7dc-44be-8714-ec2da0d50df4"],
+Cell[202279, 4623, 190, 4, 61, "Code",ExpressionUUID->"432a6573-1d6b-45ea-bf7a-38a4489280ad"],
+Cell[202472, 4629, 187, 5, 77, "Code",ExpressionUUID->"41dc66e4-7301-4f8d-94bd-dfee54498448"]
 }, Open  ]]
 }
 ]
